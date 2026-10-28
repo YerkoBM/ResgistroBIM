@@ -98,3 +98,17 @@ El catalogo ahora distingue disponibilidad de la base y envios reales registrado
 `Registrar envio` agrega un evento con version exacta, empresa destinataria, fecha real, ubicacion/enlace y nota. No envia archivos, correos ni notificaciones. Se conservan multiples empresas y reenvios, con ultima entrega registrada por empresa y exportacion CSV del historial. Los registros anteriores no se convierten en envios.
 
 Un modelo puede referenciar varias versiones base y, opcionalmente, sus envios concretos. Deben corresponder a las versiones seleccionadas y no ser posteriores a la disponibilidad/recepcion del modelo. Nuevas bases o envios no cambian las referencias historicas ni implican por si mismos que el modelo sea inutilizable. El respaldo JSON conserva ambos registros.
+
+## Plan de entregas (vista principal)
+
+El mandante declara solicitudes y sus especialidades esperadas antes de recibir archivos. Cada entregable puede corresponder a un tramo/sector lineal o a una obra individual, con sector relacionado opcional. Las especialidades previstas sin filas se muestran como **entregables por definir**: no se infiere su cantidad desde el CDE.
+
+- Filas esperadas con responsable, tipo, identificador objetivo y plazo; filtros, paginacion de 50 filas y asignacion por seleccion explicita.
+- Excel/CSV local con mapeo y previsualizacion. Claves estables `solicitud + entregable`; registros identicos se omiten, conflictos bloquean todo el lote sin reemplazar historia.
+- Recepciones declaradas o enlazadas a una version exacta de documento/modelo. Registrar recepcion no equivale a aprobacion. La cobertura requiere evaluacion explicita y coincidencia del identificador objetivo, si se declaro uno.
+- Envios de informacion base existentes pueden vincularse al plan. No se envian correos ni archivos.
+- Ediciones significativas conservan una instantanea anterior del plan y requieren reevaluar su cobertura. Una edicion sin cambios no invalida evaluaciones.
+- Alcance completo/parcial se refiere exclusivamente a cada solicitud declarada, no a la totalidad contractual. No se calculan ponderaciones ni avance real a partir de carpetas del CDE.
+- Ejemplo sintetico solo por carga explicita; el inventario anonimizado aprobado y las reglas de especialidad por nombre no se modifican.
+
+El registro sigue siendo local. Si se agota la cuota del navegador, el lote se rechaza y los datos anteriores permanecen intactos. Un registro existente sigue siendo legible con la cuota llena; no se sustituye por datos de ejemplo. Exportar respaldo JSON sigue disponible.

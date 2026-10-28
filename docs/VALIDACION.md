@@ -43,3 +43,11 @@ La regla anterior de unir categorias de carpeta queda superada. Nuevo ejemplo re
 ## Informacion base y envios explicitos
 
 Regresiones: identificador literal de archivo ISA distinto de disponibilidad y envio; multiples empresas/reenvios; cancelacion y fechas incompatibles; snapshots de codigo/nombre/identificador; colecciones antiguas ausentes sin eventos fabricados; referencias modelo→version base→envio compatibles en entrada y carga; fecha de envio no posterior al modelo; historial inmutable ante nuevas versiones. Los flujos DOM verifican registrar una base, enviar a dos empresas y asociar un modelo con una entrega concreta sin ninguna accion de comunicacion externa.
+
+## Plan primero: solicitudes, especialidades previstas y entregables
+
+Validacion ampliada para alcances lineales y puntuales dentro de una misma solicitud, especialidades esperadas sin archivos, denominador definido independiente del inventario, referencias exactas a bases/modelos y recepciones manuales explicitamente declaradas. Importacion masiva Excel/CSV con previsualizacion, claves estables, omision idempotente y bloqueo atomico de conflictos; muestra de 12.000 filas sinteticas. Tabla principal limitada a 50 filas por pagina, selectores de evidencia y envios limitados a 100 coincidencias con busqueda.
+
+Persistencia: lectura de registros existentes aun con cuota llena, rechazo seguro de guardado sin alterar datos previos y deteccion de cambios de otra pestaña antes de sobrescribir. Sin nueva migracion de almacenamiento ni acceso a servicios externos. Pruebas de DOM no sustituyen inspeccion visual en navegador publicado.
+
+Candidato final de plan: **205/205 pruebas** y TypeScript/Vite/HTML standalone aprobados. El ensayo de 12.000 filas valida procesamiento y renderizado acotado; no garantiza persistencia ilimitada con historial bajo la cuota real de cada navegador. Los lotes que excedan la cuota se rechazan conservando el estado anterior. Inspeccion visual y smoke interactivo del sitio publicado a cargo del proceso de entrega.

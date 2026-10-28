@@ -106,7 +106,7 @@ async function preview(dom: JSDOM, content: string, name = 'synthetic.csv') {
 test('CDE remains a distinct secondary register; synthetic demo, chart filters and session warning stay explicit', async () => {
   const { dom, doc, errors, network } = await setup({ persistent: false });
   try {
-    assert.deepEqual(Array.from(doc.querySelectorAll('nav[aria-label="Registros"] button')).map(node => node.textContent), ['Estado del proyecto', 'Informacion base', 'Modelos y entregas', 'Seguimiento CDE']);
+    assert.deepEqual(Array.from(doc.querySelectorAll('nav[aria-label="Registros"] button')).map(node => node.textContent), ['Plan de entregas', 'Informacion base', 'Modelos y entregas', 'Seguimiento CDE']);
     await openInventory(dom);
     assert.equal(doc.querySelector('h1')?.textContent, 'Seguimiento CDE');
     assert.match(doc.querySelector('.inventory-status')!.textContent!, /Ejemplo ficticio.*Lectura local, sin conexion al CDE.*solo durante esta sesion/);
