@@ -51,3 +51,7 @@ Validacion ampliada para alcances lineales y puntuales dentro de una misma solic
 Persistencia: lectura de registros existentes aun con cuota llena, rechazo seguro de guardado sin alterar datos previos y deteccion de cambios de otra pestaña antes de sobrescribir. Sin nueva migracion de almacenamiento ni acceso a servicios externos. Pruebas de DOM no sustituyen inspeccion visual en navegador publicado.
 
 Candidato final de plan: **205/205 pruebas** y TypeScript/Vite/HTML standalone aprobados. El ensayo de 12.000 filas valida procesamiento y renderizado acotado; no garantiza persistencia ilimitada con historial bajo la cuota real de cada navegador. Los lotes que excedan la cuota se rechazan conservando el estado anterior. Inspeccion visual y smoke interactivo del sitio publicado a cargo del proceso de entrega.
+
+## Inicio vacio y limpieza de avisos
+
+209 pruebas y build TypeScript/Vite/standalone aprobados tras retirar banner y acciones de ejemplo. Los titulos web y standalone son Registro BIM. Primer inicio sin especialidades, documentos, modelos, planes o inventarios predefinidos; registros previamente guardados y migracion historica conservados. Pruebas de importacion de plan arrancan con registro vacio. Plantilla descargable solo con encabezados. El fixture de inventario permanece solo como material de pruebas y no se incluye en el bundle; comprobacion automatizada de ausencia de payloads de ejemplo. Avisos de cuota, errores, confirmaciones y persistencia local/temporal siguen disponibles.

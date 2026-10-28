@@ -4,11 +4,12 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { JSDOM, VirtualConsole } from 'jsdom';
 import { IDBFactory } from 'fake-indexeddb';
 import { seedRegister } from '../src/document-register.ts';
-import { addInventoryLink, addSnapshot, defaultMapping, emptyInventory, syntheticInventory } from '../src/inventory-domain.ts';
+import { addInventoryLink, addSnapshot, appendInventory, defaultMapping, emptyInventory, syntheticInventory, validateInventory } from '../src/inventory-domain.ts';
 import type { InventoryState } from '../src/inventory-domain.ts';
 
-// Generated/synthetic records plus the app's explicitly approved anonymized example.
+// Test-only synthetic records and explicitly approved anonymized fixture; never bundled into the app.
 // No private input files. Tests execute the built app in jsdom, not a browser.
+const approvedFixture = () => validateInventory(JSON.parse(readFileSync('src/data/cde-anonymized-demo.json', 'utf8')));
 const bundle = readFileSync('dist/assets/' + readdirSync('dist/assets').find(file => file.endsWith('.js')), 'utf8');
 const pause = (ms = 10) => new Promise(resolve => setTimeout(resolve, ms));
 async function until(condition: () => boolean, description: string) {
@@ -74,7 +75,7 @@ function submit(dom: JSDOM, selector: string) {
 }
 async function openInventory(dom: JSDOM) {
   click(dom, 'Seguimiento CDE');
-  await until(() => !!dom.window.document.querySelector('table[aria-label="Inventario CDE"]'), 'Inventory loaded');
+  await until(() => !!dom.window.document.querySelector('table[aria-label="Inventario CDE"], .inventory-empty'), 'Inventory loaded or genuinely empty');
 }
 const tableRows = (dom: JSDOM) => Array.from(dom.window.document.querySelectorAll<HTMLTableRowElement>('table[aria-label="Inventario CDE"] tbody tr'));
 function rowFor(dom: JSDOM, id: string) {
@@ -103,24 +104,22 @@ async function preview(dom: JSDOM, content: string, name = 'synthetic.csv') {
   await until(() => !!dom.window.document.querySelector('.import-panel'), 'CSV preview rendered');
 }
 
-test('CDE remains a distinct secondary register; synthetic demo, chart filters and session warning stay explicit', async () => {
+test('empty CDE remains empty with usable import, no fake charts/rows, and an explicit session-storage warning', async () => {
   const { dom, doc, errors, network } = await setup({ persistent: false });
   try {
     assert.deepEqual(Array.from(doc.querySelectorAll('nav[aria-label="Registros"] button')).map(node => node.textContent), ['Plan de entregas', 'Informacion base', 'Modelos y entregas', 'Seguimiento CDE']);
     await openInventory(dom);
     assert.equal(doc.querySelector('h1')?.textContent, 'Seguimiento CDE');
-    assert.match(doc.querySelector('.inventory-status')!.textContent!, /Ejemplo ficticio.*Lectura local, sin conexion al CDE.*solo durante esta sesion/);
-    assert.equal(tableRows(dom).length, 3);
-    assert.equal(chartTotal(dom, 'Estado por carpeta'), 3);
-    assert.equal(chartTotal(dom, 'Comparacion de instantaneas'), 3);
-    set(dom, '[aria-label="Grafico de distribucion"]', 'links'); await pause();
-    bar(dom, 'Vinculos registrados', 'Sin vinculo registrado').click(); await pause();
-    assert.equal(tableRows(dom).length, 3);
-    assert.equal(bar(dom, 'Vinculos registrados', 'Sin vinculo registrado').getAttribute('aria-pressed'), 'true');
-    rowFor(dom, 'demo-file-4').querySelector<HTMLButtonElement>('button')!.click(); await pause();
-    assert.equal(button(dom, 'Vincular version manual').disabled, true);
+    assert.match(doc.querySelector('.inventory-status')!.textContent!, /Lectura local, sin conexion al CDE.*solo durante esta sesion/);
+    assert.ok(doc.querySelector('.inventory-empty'));
+    assert.equal(tableRows(dom).length, 0); assert.equal(doc.querySelector('.inventory-chart'), null);
+    assert.equal(doc.querySelector('.inventory-selectors'), null); assert.equal(doc.querySelector('.folder-rules'), null);
+    assert.equal(doc.querySelector<HTMLInputElement>('input[type="file"]')!.disabled, false);
+    assert.equal(button(dom, 'Exportar tabla').disabled, true);
+    assert.equal(Array.from(doc.querySelectorAll('button')).some(node => /Cargar ejemplo/.test(node.textContent ?? '')), false);
+    assert.doesNotMatch(doc.querySelector('.inventory-status')!.textContent!, /Ejemplo ficticio/);
     click(dom, 'Informacion base'); await pause(); assert.equal(doc.querySelector('h1')?.textContent, 'Informacion base');
-    await openInventory(dom); assert.equal(tableRows(dom).length, 3);
+    await openInventory(dom); assert.equal(tableRows(dom).length, 0); assert.ok(doc.querySelector('.inventory-empty'));
     assert.deepEqual(errors, []); assert.deepEqual(network, []);
   } finally { dom.window.close(); }
 });
@@ -246,6 +245,7 @@ test('CSV preview supports explicit column mapping, cancel without save, import,
   const csv = 'Identificador;VersionCDE;Archivo entregado;Ruta\n000001;VERSION-1;nombre generico.isa;1_WIP/Grupo\n000002;VERSION-2;nombre generico.isa;2_COMPARTIDO/Grupo\n';
   try {
     await openInventory(dom);
+    assert.ok(doc.querySelector('.inventory-empty')); assert.equal(tableRows(dom).length, 0); assert.equal(await stored(factory), undefined);
     const documentRegisterBefore = dom.window.localStorage.getItem('registro-documental-demo-v2');
     await preview(dom, csv);
     assert.match(doc.querySelector('.import-panel .count')!.textContent!, /2 registros.*no se infiere revision ni resultado IDS/);
@@ -303,17 +303,14 @@ test('cancelled or unmounted parsing cannot show a stale preview, and malformed 
   } finally { dom.window.close(); }
 });
 
-test('explicit approved anonymized example appends 12933 rows without overwriting manual state; repeat load is idempotent and specialties filter', async () => {
+test('preloaded test-only 12933-row fixture preserves prior snapshots/manual links and filters specialty without writes', async () => {
   const register = seedRegister();
   const inventory = addInventoryLink(syntheticInventory(), register, { sourceType: 'document', sourceVersionId: 'ver-1', snapshotId: 'snapshot-demo-2', fileId: 'demo-file-4', note: 'Preserve synthetic manual evidence' });
-  const { dom, doc, factory, errors, network } = await setup({ inventory });
+  const combined = appendInventory(inventory, approvedFixture());
+  const { dom, doc, factory, errors, network } = await setup({ inventory: combined });
   try {
     await openInventory(dom);
     const manualRegister = dom.window.localStorage.getItem('registro-documental-demo-v2');
-    assert.equal((await stored(factory))!.snapshots.length, 2);
-    assert.equal(tableRows(dom).length, 3, 'Approved example is not loaded implicitly');
-    click(dom, 'Cargar ejemplo anonimizado');
-    await until(() => doc.body.textContent!.includes('Ejemplo anonimizado agregado.'), 'Explicit anonymized example loaded');
     const loaded = (await stored(factory))!;
     assert.equal(loaded.snapshots.length, inventory.snapshots.length + 1);
     assert.equal(loaded.snapshots.at(-1)!.rows.length, 12_933);
@@ -323,9 +320,8 @@ test('explicit approved anonymized example appends 12933 rows without overwritin
     assert.equal(tableRows(dom).length, 50);
     assert.match(doc.querySelector('.pagination')!.textContent!, /1–50 de 12.933/);
     assert.equal(chartTotal(dom, 'Estado por carpeta'), 12_933);
-    click(dom, 'Cargar ejemplo anonimizado');
-    await until(() => doc.body.textContent!.includes('El ejemplo ya esta cargado.'), 'Repeated load is acknowledged');
-    assert.deepEqual(await stored(factory), loaded);
+    assert.equal(Array.from(doc.querySelectorAll('button')).some(node => /Cargar ejemplo/.test(node.textContent ?? '')), false);
+    assert.deepEqual(await stored(factory), combined);
     set(dom, '[aria-label="Grafico de distribucion"]', 'specialty'); await pause();
     const specialtyChart = chart(dom, 'Especialidad por nombre');
     assert.equal(specialtyChart.querySelectorAll('.chart-bar').length, 30);
@@ -342,6 +338,7 @@ test('explicit approved anonymized example appends 12933 rows without overwritin
     assert.ok(doc.querySelector('.inventory-file-meta')!.textContent!.includes(`Especialidad: ${selectedSpecialty}`));
     click(dom, 'Quitar filtros'); await pause();
     assert.match(doc.querySelector('.toolbar .count')!.textContent!, /12.933 filas/);
+    assert.deepEqual(await stored(factory), combined);
     assert.deepEqual(errors, []); assert.deepEqual(network, []);
   } finally { dom.window.close(); }
 });

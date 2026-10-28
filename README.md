@@ -1,12 +1,12 @@
 # ResgistroBIM
 
-## Control documental · demo local
+## Control documental local
 
 https://yerkobm.github.io/ResgistroBIM/
 
 Dos registros para quien coordina y gestiona: documentos de especialistas, y modelos producidos internamente o recibidos de empresas externas. Disposicion tabular inspirada en un MIDP/TIDP, sin afirmar cumplimiento formal de una plantilla o norma. No es un gestor de tareas BIM.
 
-**Solo datos ficticios. Cambios guardados en el navegador, sin sincronizacion entre personas. No ingresar informacion real ni enlaces privados.**
+**Inicio vacio. Cambios guardados solo en este navegador, sin sincronizacion entre personas. Los registros existentes se conservan. Exporta respaldos para evitar perder datos.**
 
 ### Uso
 
@@ -75,7 +75,7 @@ Para uso compartido real, ver `docs/PASO_A_MULTIUSUARIO.md`.
 - Inventario en IndexedDB, separado del registro manual v2. Fallos de cuota o escrituras desde una pestaña desactualizada no sustituyen datos; se pide recargar. Sin IndexedDB se avisa del modo temporal. Respaldo CDE y restauracion aditiva (no reemplaza datos existentes); el respaldo general del registro manual sigue separado.
 - Tabla paginada a 50 filas. Pruebas sinteticas de 12.000 filas, persistencia, abortos, cuota y conflictos entre pestañas. Las pruebas de almacenamiento simulado no garantizan la cuota de cada navegador.
 
-`Cargar ejemplo anonimizado` agrega expresamente una instantanea de 12.933 registros derivada de un inventario, con especialidades y distribucion por carpetas. Identidades, nombres y rutas se sustituyeron; responsables, fechas por archivo y tamanos se omitieron. No representa los plazos ficticios del registro manual ni crea vinculos automaticamente. El JSON revisado se incluye en el bundle para que el HTML standalone no requiera red; se analiza solo al pulsar el boton.
+El inventario inicia vacio. El archivo anonimizado historico queda disponible solo para pruebas automatizadas, fuera del bundle de la aplicacion. Los inventarios ya guardados se conservan.
 
 ### Estado del proyecto
 
@@ -89,7 +89,7 @@ El codigo EST reconocido en el nombre se presenta como Estructuras. La clasifica
 
 La especialidad CDE se identifica exclusivamente por un codigo tecnico reconocido en la posicion estructurada `-BIM-…-CODIGO-` del **nombre del archivo**, usando el catalogo observado. No se deduce de carpeta, tags ni columna importada. Sin codigo reconocido o con varias coincidencias: `Sin identificar`. EST se muestra como Estructuras; las demas siglas permanecen literales. Los campos importados originales y la ruta se conservan como evidencia, no como clasificacion autoritativa.
 
-El ejemplo anterior que usaba carpetas se conserva como obsoleto y no se elige automaticamente. `Cargar ejemplo anonimizado` agrega la version corregida con identidad distinta, sin reemplazar importaciones, vinculos ni fichas manuales. El nuevo ejemplo mantiene nombres ficticios con el mismo patron de codificacion; los archivos sin codigo permanecen genericos.
+Los inventarios historicos anteriores se conservan sin borrar datos. La clasificacion automatica vigente usa exclusivamente el patron de nombre reconocido; los archivos sin codigo quedan sin identificar.
 
 ### Informacion base enviada a empresas
 
@@ -109,6 +109,10 @@ El mandante declara solicitudes y sus especialidades esperadas antes de recibir 
 - Envios de informacion base existentes pueden vincularse al plan. No se envian correos ni archivos.
 - Ediciones significativas conservan una instantanea anterior del plan y requieren reevaluar su cobertura. Una edicion sin cambios no invalida evaluaciones.
 - Alcance completo/parcial se refiere exclusivamente a cada solicitud declarada, no a la totalidad contractual. No se calculan ponderaciones ni avance real a partir de carpetas del CDE.
-- Ejemplo sintetico solo por carga explicita; el inventario anonimizado aprobado y las reglas de especialidad por nombre no se modifican.
+- Sin carga de datos de ejemplo; las reglas de especialidad por nombre permanecen intactas.
 
 El registro sigue siendo local. Si se agota la cuota del navegador, el lote se rechaza y los datos anteriores permanecen intactos. Un registro existente sigue siendo legible con la cuota llena; no se sustituye por datos de ejemplo. Exportar respaldo JSON sigue disponible.
+
+## Inicio sin datos de ejemplo
+
+No se cargan semillas, inventarios ni planes ficticios al iniciar. Se retiraron los botones de cargar ejemplos y el banner repetitivo. Los datos que ya existan en el navegador no se borran ni reclasifican. La plantilla de importacion contiene solo encabezados; los archivos de prueba externos no forman parte del programa. Permanecen los avisos de guardado local/temporal, errores y confirmaciones funcionales.

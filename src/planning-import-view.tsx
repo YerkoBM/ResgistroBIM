@@ -4,9 +4,9 @@ import {exportCSVsafeinjection} from './document-register';
 import {startParse} from './inventory-parser';
 import type {InventoryParseResult} from './inventory-parser';
 import {prepareTable} from './inventory-domain';
-import {applyPlanImport,defaultPlanMapping,planImportFields,planImportLabels,planTemplateRows,previewPlanImport} from './planning-import';
+import {applyPlanImport,defaultPlanMapping,planImportFields,planImportLabels,previewPlanImport} from './planning-import';
 import type {PlanImportMapping} from './planning-import';
-function template(){const url=URL.createObjectURL(new Blob([exportCSVsafeinjection(planTemplateRows())],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='plantilla-plan-entregas.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+function template(){const url=URL.createObjectURL(new Blob([exportCSVsafeinjection([planImportFields.map(f=>planImportLabels[f])])],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='plantilla-plan-entregas.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 export function PlanningImport({register,blocked,onSave,onClose}:{register:Register;blocked:boolean;onSave:(next:Register,message:string)=>boolean;onClose:()=>void}){
  const [parsed,setParsed]=useState<InventoryParseResult|null>(null),[sheet,setSheet]=useState(0),[header,setHeader]=useState(1),[mapping,setMapping]=useState<PlanImportMapping>({}),[error,setError]=useState(''),[reading,setReading]=useState(false),[fileName,setFileName]=useState(''),[saving,setSaving]=useState(false),[reviewed,setReviewed]=useState(false);
  const generation=useRef(0),job=useRef<{cancel:()=>void}|null>(null),lock=useRef(false);

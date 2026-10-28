@@ -2,12 +2,12 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,readdirSync} from 'node:fs';
 import {JSDOM,VirtualConsole} from 'jsdom';
-import {seedRegister,exportCSVsafeinjection} from '../src/document-register.ts';
+import {emptyRegister,exportCSVsafeinjection} from '../src/document-register.ts';
 import {planTemplateRows} from '../src/planning-import.ts';
 const bundle=readFileSync('dist/assets/'+readdirSync('dist/assets').find(f=>f.endsWith('.js')),'utf8');
 const wait=()=>new Promise(r=>setTimeout(r,40));
 async function until(predicate:()=>boolean){const deadline=Date.now()+4000;while(!predicate()&&Date.now()<deadline)await wait();assert.ok(predicate(),'Expected asynchronous preview state');}
-async function setup(){const errors:unknown[]=[];const vc=new VirtualConsole();vc.on('jsdomError',e=>errors.push(e));const dom=new JSDOM('<div id="root"></div>',{url:'https://demo.invalid/ResgistroBIM/',runScripts:'dangerously',pretendToBeVisual:true,virtualConsole:vc});dom.window.localStorage.setItem('registro-documental-demo-v2',JSON.stringify(seedRegister(new Date('2026-10-28T12:00:00Z'))));dom.window.eval(bundle);await wait();return {dom,doc:dom.window.document,errors};}
+async function setup(){const errors:unknown[]=[];const vc=new VirtualConsole();vc.on('jsdomError',e=>errors.push(e));const dom=new JSDOM('<div id="root"></div>',{url:'https://demo.invalid/ResgistroBIM/',runScripts:'dangerously',pretendToBeVisual:true,virtualConsole:vc});dom.window.localStorage.setItem('registro-documental-demo-v2',JSON.stringify(emptyRegister()));dom.window.eval(bundle);await wait();return {dom,doc:dom.window.document,errors};}
 function click(dom:JSDOM,text:string){const button=Array.from(dom.window.document.querySelectorAll<HTMLButtonElement>('button')).find(b=>b.textContent?.trim()===text);assert.ok(button,`Missing ${text}`);button.click();}
 async function file(dom:JSDOM,rows:string[][]){const input=dom.window.document.querySelector<HTMLInputElement>('[aria-label="Archivo del plan"]')!;assert.ok(input);Object.defineProperty(input,'files',{configurable:true,value:[new dom.window.File([exportCSVsafeinjection(rows)],'plan-ficticio.csv',{type:'text/csv'})]});input.dispatchEvent(new dom.window.Event('change',{bubbles:true}));for(let i=0;i<30;i++){await wait();if(dom.window.document.querySelector('[aria-label="Vista previa del plan"]')){await wait();return;}}throw new Error('Preview not ready');}
 const saved=(dom:JSDOM)=>JSON.parse(dom.window.localStorage.getItem('registro-documental-demo-v2')!);
