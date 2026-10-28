@@ -39,3 +39,7 @@ EST (155 IFC) y Estructuras (614 IFC) se muestran en un unico grupo Estructuras 
 ## Correccion de fuente de especialidad: solo nombre
 
 La regla anterior de unir categorias de carpeta queda superada. Nuevo ejemplo revisado SHA-256 `4aec6a083defce28f5589b4356ab4c8254aee070b3514e1418e0a3faafdd7c20`: 12.933 archivos, 7.074 con codigo de nombre reconocido y 5.859 sin identificar. IFC activos: 4.038; Estructuras por EST: 155 (3 WIP, 152 Compartido); sin identificar activos: 706. Ya no se asignan a Estructuras los 614 IFC cuyo nombre no aporta ese codigo. Se conserva el dato original de cada fila y se agrega el nuevo ejemplo sin sustituir historial previo.
+
+## Informacion base y envios explicitos
+
+Regresiones: identificador literal de archivo ISA distinto de disponibilidad y envio; multiples empresas/reenvios; cancelacion y fechas incompatibles; snapshots de codigo/nombre/identificador; colecciones antiguas ausentes sin eventos fabricados; referencias modelo→version base→envio compatibles en entrada y carga; fecha de envio no posterior al modelo; historial inmutable ante nuevas versiones. Los flujos DOM verifican registrar una base, enviar a dos empresas y asociar un modelo con una entrega concreta sin ninguna accion de comunicacion externa.

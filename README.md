@@ -90,3 +90,11 @@ El codigo EST reconocido en el nombre se presenta como Estructuras. La clasifica
 La especialidad CDE se identifica exclusivamente por un codigo tecnico reconocido en la posicion estructurada `-BIM-…-CODIGO-` del **nombre del archivo**, usando el catalogo observado. No se deduce de carpeta, tags ni columna importada. Sin codigo reconocido o con varias coincidencias: `Sin identificar`. EST se muestra como Estructuras; las demas siglas permanecen literales. Los campos importados originales y la ruta se conservan como evidencia, no como clasificacion autoritativa.
 
 El ejemplo anterior que usaba carpetas se conserva como obsoleto y no se elige automaticamente. `Cargar ejemplo anonimizado` agrega la version corregida con identidad distinta, sin reemplazar importaciones, vinculos ni fichas manuales. El nuevo ejemplo mantiene nombres ficticios con el mismo patron de codificacion; los archivos sin codigo permanecen genericos.
+
+### Informacion base enviada a empresas
+
+El catalogo ahora distingue disponibilidad de la base y envios reales registrados. `Revision / fecha del archivo` es un identificador literal independiente del nombre original y de `Disponible desde`: una fecha escrita en un ISA no se interpreta como fecha de envio ni se convierte en una revision F/E. La especialidad de una ficha manual la selecciona su responsable, aunque el nombre generico no permita identificarla automaticamente en el CDE.
+
+`Registrar envio` agrega un evento con version exacta, empresa destinataria, fecha real, ubicacion/enlace y nota. No envia archivos, correos ni notificaciones. Se conservan multiples empresas y reenvios, con ultima entrega registrada por empresa y exportacion CSV del historial. Los registros anteriores no se convierten en envios.
+
+Un modelo puede referenciar varias versiones base y, opcionalmente, sus envios concretos. Deben corresponder a las versiones seleccionadas y no ser posteriores a la disponibilidad/recepcion del modelo. Nuevas bases o envios no cambian las referencias historicas ni implican por si mismos que el modelo sea inutilizable. El respaldo JSON conserva ambos registros.

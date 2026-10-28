@@ -1,0 +1,9 @@
+import React from 'react';
+import type {Register} from './document-register';
+import {exportCSVsafeinjection} from './document-register';
+import {dispatchList,latestBaseDispatchForCompany} from './base-dispatch';
+export function BaseDispatchHistory({state,documentId}:{state:Register;documentId:string}){
+ const versions=new Set(state.versions.filter(v=>v.documentId===documentId).map(v=>v.id));const sends=dispatchList(state).filter(e=>versions.has(e.versionId)).slice().sort((a,b)=>b.date.localeCompare(a.date));
+ function csv(){const content=exportCSVsafeinjection([['ID envio','ID version base','Codigo al enviar','Archivo original','Revision / fecha del archivo','Empresa destinataria','Fecha real de envio','Ubicacion / enlace','Nota'],...sends.map(e=>[e.id,e.versionId,e.documentCode,e.fileName,e.identifier,e.recipient,e.date,e.location,e.note])]);const url=URL.createObjectURL(new Blob([content],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='envios-informacion-base.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+ return <section className="base-dispatch-history"><div className="section-heading"><h3>Envios a empresas</h3>{sends.length>0&&<button onClick={csv}>Exportar envios</button>}</div>{!sends.length?<p className="count">Sin envios registrados.</p>:<div className="table-scroll"><table aria-label="Envios de informacion base"><thead><tr><th>Empresa</th><th>Revision / fecha del archivo</th><th>Fecha real de envio</th><th>Ubicacion / enlace</th></tr></thead><tbody>{sends.map(e=><tr key={e.id}><td>{e.recipient}{latestBaseDispatchForCompany(state,documentId,e.recipient)?.id===e.id&&<small>Ultimo envio a esta empresa</small>}</td><td><b>{e.identifier}</b><small>{e.fileName}</small></td><td>{e.date.split('-').reverse().join('/')}{e.note&&<small>{e.note}</small>}</td><td className="base-location">{e.location||'Sin ubicacion registrada'}</td></tr>)}</tbody></table></div>}</section>;
+}

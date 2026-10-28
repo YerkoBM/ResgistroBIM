@@ -106,7 +106,7 @@ async function preview(dom: JSDOM, content: string, name = 'synthetic.csv') {
 test('CDE remains a distinct secondary register; synthetic demo, chart filters and session warning stay explicit', async () => {
   const { dom, doc, errors, network } = await setup({ persistent: false });
   try {
-    assert.deepEqual(Array.from(doc.querySelectorAll('nav[aria-label="Registros"] button')).map(node => node.textContent), ['Estado del proyecto', 'Documentos de especialistas', 'Modelos y entregas', 'Seguimiento CDE']);
+    assert.deepEqual(Array.from(doc.querySelectorAll('nav[aria-label="Registros"] button')).map(node => node.textContent), ['Estado del proyecto', 'Informacion base', 'Modelos y entregas', 'Seguimiento CDE']);
     await openInventory(dom);
     assert.equal(doc.querySelector('h1')?.textContent, 'Seguimiento CDE');
     assert.match(doc.querySelector('.inventory-status')!.textContent!, /Ejemplo ficticio.*Lectura local, sin conexion al CDE.*solo durante esta sesion/);
@@ -119,7 +119,7 @@ test('CDE remains a distinct secondary register; synthetic demo, chart filters a
     assert.equal(bar(dom, 'Vinculos registrados', 'Sin vinculo registrado').getAttribute('aria-pressed'), 'true');
     rowFor(dom, 'demo-file-4').querySelector<HTMLButtonElement>('button')!.click(); await pause();
     assert.equal(button(dom, 'Vincular version manual').disabled, true);
-    click(dom, 'Documentos de especialistas'); await pause(); assert.equal(doc.querySelector('h1')?.textContent, 'Control documental');
+    click(dom, 'Informacion base'); await pause(); assert.equal(doc.querySelector('h1')?.textContent, 'Informacion base');
     await openInventory(dom); assert.equal(tableRows(dom).length, 3);
     assert.deepEqual(errors, []); assert.deepEqual(network, []);
   } finally { dom.window.close(); }
@@ -295,7 +295,7 @@ test('cancelled or unmounted parsing cannot show a stale preview, and malformed 
     click(dom, 'Cancelar', doc.querySelector('.import-panel')!); await pause();
     await chooseFile(dom, slow);
     await until(() => doc.body.textContent!.includes('Leyendo slow-synthetic.csv'), 'Second pending read shown');
-    click(dom, 'Documentos de especialistas'); await pause();
+    click(dom, 'Informacion base'); await pause();
     release(new TextEncoder().encode('File VID,File name\nstale,stale.isa').buffer); await pause(30);
     await openInventory(dom);
     assert.equal(doc.querySelector('.import-panel'), null); assert.equal(doc.querySelector('[role="alert"]'), null);
