@@ -1,19 +1,11 @@
-# Validacion del prototipo local
+# Validacion del control documental
 
-Fecha: 2026-10-28.
+- TypeScript y build de produccion.
+- Pruebas de dominio anterior para compatibilidad; reglas del nuevo registro.
+- Flujos DOM: agregar especialidad/documento/version, duplicados, cancelar/Escape, filtros, revision y cierre de observaciones.
+- Migracion con datos originales intactos; corrupcion bloqueada; alternativa temporal sin localStorage.
+- CSV protege contra formulas; enlaces solo HTTPS sin credenciales; referencias y fechas validadas.
 
-- TypeScript estricto y build de produccion: aprobados.
-- 24 pruebas de dominio y DOM: aprobadas.
-- Incluye alta de version sin sobrescribir antecedentes, duplicados, roles simulados, respuesta/cierre separado, revision elegible por observacion, filtros, navegacion hash, cancelacion/Escape, exportacion CSV protegida, validacion de almacenamiento corrupto y HTML standalone con almacenamiento no disponible.
-- Revision independiente: se corrigieron opcion de version antigua en respuesta, aviso oculto en detalle y recuperacion de almacenamiento corrupto.
-- Auditoria de dependencias de produccion: 0 vulnerabilidades reportadas por npm audit en la fecha de revision. No equivale a auditoria de seguridad.
-- Rediseño: pruebas adicionales de registro inicial, seleccion de ficha sin mutacion, filtro sin ficha obsoleta, observacion enlazada tras navegacion hash y conservacion de rol/historial. Se corrigio un reinicio involuntario del filtro al navegar a una observacion.
-- Navegador real/capturas responsive: pendiente. El navegador cloud existente bloqueo el archivo local por politica de la organizacion; no se intento evadir el bloqueo. El entorno bloqueo el inicio de Chromium con socket EPERM. No se intento evadir esa restriccion.
-- Demo publica desplegada con GitHub Actions. Sin usuarios reales, base de datos remota, automatizacion IFC o pruebas multiusuario.
+Inspeccion visual real local pendiente: el navegador del computador cloud no puede conectar al localhost de ejecucion, y Chromium local no pudo iniciar por restriccion de sockets. No confundir las pruebas DOM con renderizado real.
 
-Esta es una demostracion de flujos, no una entrega lista para almacenar informacion real de proyecto.
-
-- Fondo claro forzado con color-scheme: only light y metadato light, incluso con preferencia oscura del sistema; paleta de superficies aclarada conservando texto oscuro.
-- Aviso visible: no ingresar informacion real del proyecto.
-
-- Sitio publico revisado visualmente: fondo claro, tabla/ficha, filtro y ruta hash de observaciones correctos. La limitacion anterior de archivo local no impidio revisar el sitio publico autorizado.
+La validacion publica posterior al despliegue se registra por separado. No hay prueba multiusuario porque no existe backend compartido.
