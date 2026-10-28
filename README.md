@@ -78,6 +78,8 @@ Para uso compartido real, ver `docs/PASO_A_MULTIUSUARIO.md`.
 
 ### Estado del proyecto
 
-La primera vista resume el avance por archivos de modelo del inventario seleccionado, con alcance predeterminado `.ifc` y formatos ajustables. El criterio de este proyecto es: Publicado = terminado, Compartido = trabajable con observaciones, WIP = sin revisar. No se asignan pesos parciales artificiales. Se cuenta cada File VID: archivos/formats/copias no equivalen necesariamente a modelos fisicos distintos.
+La primera vista resume los estados observados en carpetas de los archivos de modelo del inventario seleccionado, con alcance predeterminado `.ifc` y formatos ajustables. El CDE puede estar desordenado: Publicado, Compartido y WIP describen la ubicacion observada, no una validacion del avance real por gestion. No se asignan pesos parciales artificiales. Se cuenta cada File VID: archivos/formats/copias no equivalen necesariamente a modelos fisicos distintos.
 
 El denominador incluye archivos activos sin clasificar; archivados y adjuntos quedan separados. Cero archivos activos se muestra sin porcentaje. Las fichas manuales muestran compromisos vencidos, ausencia de plazo y revision enviada versus objetivo sin mezclarse con los porcentajes CDE. El alcance contractual completo no esta confirmado; no se declara un avance global contractual. Los colores/etiquetas de carpeta son independientes de la clasificacion para avance, que puede configurarse expresamente.
+
+Equivalencia confirmada de especialidad: `EST`, `Estructura` y `Estructuras` se agrupan como `Estructuras` (sin distinguir mayusculas y espacios exteriores). No se adivinan otras siglas. La clasificacion original y la ruta completa quedan visibles en el detalle; no se reescribe el inventario ni el ejemplo anonimizado.

@@ -31,3 +31,7 @@ El bundle supera el aviso generico de 500 KB de Vite porque incluye el JSON anon
 ## Estado del proyecto
 
 Benchmark del ejemplo revisado: 4.039 archivos IFC, 4.038 activos, 965 sin revisar, 2.496 trabajables, 577 terminados y 1 archivado. Avance por conteo: 577/4.038 = 14,3%; por completar o confirmar: 3.461. Sin deduplicacion de modelos fisicos ni extrapolacion al alcance contractual. Pruebas de formatos, desconocidos, cero denominador, clasificacion explicita independiente de etiquetas, tabla de especialidades y filtros; compromisos manuales independientes. Apertura simultanea del almacen compartido espera la misma carga, sin cache vacia intermedia.
+
+## Equivalencia confirmada y trazabilidad de ubicacion
+
+EST (155 IFC) y Estructuras (614 IFC) se muestran en un unico grupo Estructuras de 769: 601 en WIP, 168 en Compartido, 0 en Publicado. El total activo sigue siendo 4.038. Se prueban mayusculas/espacios, ausencia de coincidencias parciales, fuente inmutable, conteo del filtro y ubicacion completa visible. Los indicadores se rotulan como observaciones de carpeta, no avance real validado.
