@@ -1,57 +1,35 @@
-# Validacion del control documental
+# Validación
 
-- TypeScript y build de produccion.
-- Pruebas de dominio anterior para compatibilidad; reglas del nuevo registro.
-- Flujos DOM: agregar especialidad/documento/version, duplicados, cancelar/Escape, filtros, revision y cierre de observaciones.
-- Migracion con datos originales intactos; corrupcion bloqueada; alternativa temporal sin localStorage.
-- CSV protege contra formulas; enlaces solo HTTPS sin credenciales; referencias y fechas validadas.
+## Referencia actual
 
-Inspeccion visual real local pendiente: el navegador del computador cloud no puede conectar al localhost de ejecucion, y Chromium local no pudo iniciar por restriccion de sockets. No confundir las pruebas DOM con renderizado real.
+La versión de inicio vacío fue validada con **209 pruebas**, TypeScript, build de Vite y generación del HTML local. Este documento describe esa cobertura, no certifica uso multiusuario ni rendimiento ilimitado.
 
-La validacion publica posterior al despliegue se registra por separado. No hay prueba multiusuario porque no existe backend compartido.
+Ejecutar nuevamente al cambiar código:
 
-## Fichas de modelos
+```bash
+npm ci
+npm test
+```
 
-56 pruebas locales aprobadas, incluidas versiones reales distintas al objetivo, historial objetivo/empresa/insumos inmutable, falta de entrega, razones obligatorias, referencias a versiones documentales y fecha de recepcion compatible, observaciones por entrega y cierre expreso. V2 sin colecciones nuevas se conserva sin insertar ejemplos. La UI se verifica posteriormente en el sitio publicado; no se reintento el navegador local restringido.
+## Qué se comprueba
 
-## Perspectiva de gestion
+| Área | Cobertura |
+|---|---|
+| Plan | Solicitudes mixtas lineales/puntuales; especialidades previstas sin entregables; objetivos y plazos; recepción parcial; cobertura explícita; claves estables; historial y ediciones sin cambios. |
+| Importación del plan | Excel/CSV, mapeo, vista previa, lote atómico, duplicados idénticos, conflictos, asignación seleccionada y paginación. |
+| Información base | Identificador literal separado de disponibilidad/envío; varias empresas y reenvíos; referencias exactas; sin comunicaciones externas. |
+| Modelos | Producción/recepción separada de envío a revisión; objetivo histórico; insumos utilizados; observaciones y cierre explícito. |
+| CDE | Parser acotado y cancelable; IDs; fechas; comparación de instantáneas; vínculos manuales; clasificación por nombre; ruta original y estados observados. |
+| Persistencia | Datos anteriores conservados, corrupción bloqueada, cuota, cambios detectados entre pestañas, alternativa temporal y restauración CDE aditiva. |
+| Inicio vacío | Sin datos precargados ni acciones de ejemplo; alta manual e importación desde vacío; registros existentes intactos; títulos web/local sin avisos redundantes. |
 
-67 pruebas locales aprobadas tras separar produccion/recepcion de envio a revision. Incluyen produccion interna sin empresa externa, fecha de envio no anterior al modelo, referencias exactas, objetivo historico del envio, motivo por revision distinta, observaciones al envio y conservacion de etapas antiguas no especificadas. Todos los datos iniciales son ficticios; no se incluyen identidades de organizaciones reales del usuario.
+Las exportaciones CSV neutralizan fórmulas. Se validan referencias, fechas y enlaces admitidos. El fixture anonimizado histórico se usa en pruebas, pero no se incluye en el bundle de la aplicación.
 
-## Seguimiento CDE (candidato local)
+## Límites de la evidencia
 
-Regresiones cubiertas: parser XLSX/CSV acotado y cancelable, celdas de fecha sin cambio de zona, IDs numericos sin perdida de precision; mapeo opcional vacio, identificadores duplicados y nombres repetidos; comparacion solo con continuidad confirmada y alcance compatible; cruces muchos-a-muchos, enlaces historicos no propagados por defecto, plazos solo con referencia verificable; estados por prefijo de carpeta y raiz de proyecto; restauracion aditiva; IndexedDB 12.000 filas, dos pestañas, cuota/abortos, corrupcion y versionchange.
+- Las pruebas DOM usan jsdom; las de IndexedDB incluyen almacenamiento simulado. No sustituyen revisión visual, cuota real o comportamiento del navegador del usuario.
+- Los ensayos sintéticos de 12.000 filas comprueban procesamiento y renderizado acotado. Un registro con mucho historial puede superar la cuota local; el guardado debe fallar sin reemplazar los datos anteriores.
+- Los gráficos CDE cuentan archivos del alcance seleccionado, no modelos físicos únicos ni avance contractual certificado.
+- No se prueban autenticación, backend o colaboración multiusuario porque no existen en esta versión.
 
-La inspeccion de pixeles y los flujos en navegador real se realizan sobre Pages tras desplegar el commit validado. No confundir jsdom/fake-indexeddb con validacion de cuota o layout real.
-
-Ejemplo anonimizado revisado por separado: SHA-256 `639725cc0c58f81f438078c35db656620dda9304995583d0f0aa31f6507ceba2`, 12.933 registros. Las pruebas verifican hash, campos personales/fechas/tamanos omitidos, carga expresa aditiva, no duplicacion y filtros de especialidad. No se incluyen el Excel privado ni scripts de transformacion privados. Auditoria de dependencias de produccion: 0 vulnerabilidades reportadas al validar este candidato.
-
-El bundle supera el aviso generico de 500 KB de Vite porque incluye el JSON anonimizado (sin peticion de red) para mantener el HTML standalone. Se conserva un unico JS y CSS, worker inline; la tabla limita el render a 50 filas y los graficos extensos tienen desplazamiento.
-
-## Estado del proyecto
-
-Benchmark del ejemplo revisado: 4.039 archivos IFC, 4.038 activos, 965 sin revisar, 2.496 trabajables, 577 terminados y 1 archivado. Avance por conteo: 577/4.038 = 14,3%; por completar o confirmar: 3.461. Sin deduplicacion de modelos fisicos ni extrapolacion al alcance contractual. Pruebas de formatos, desconocidos, cero denominador, clasificacion explicita independiente de etiquetas, tabla de especialidades y filtros; compromisos manuales independientes. Apertura simultanea del almacen compartido espera la misma carga, sin cache vacia intermedia.
-
-## Equivalencia confirmada y trazabilidad de ubicacion
-
-EST (155 IFC) y Estructuras (614 IFC) se muestran en un unico grupo Estructuras de 769: 601 en WIP, 168 en Compartido, 0 en Publicado. El total activo sigue siendo 4.038. Se prueban mayusculas/espacios, ausencia de coincidencias parciales, fuente inmutable, conteo del filtro y ubicacion completa visible. Los indicadores se rotulan como observaciones de carpeta, no avance real validado.
-
-## Correccion de fuente de especialidad: solo nombre
-
-La regla anterior de unir categorias de carpeta queda superada. Nuevo ejemplo revisado SHA-256 `4aec6a083defce28f5589b4356ab4c8254aee070b3514e1418e0a3faafdd7c20`: 12.933 archivos, 7.074 con codigo de nombre reconocido y 5.859 sin identificar. IFC activos: 4.038; Estructuras por EST: 155 (3 WIP, 152 Compartido); sin identificar activos: 706. Ya no se asignan a Estructuras los 614 IFC cuyo nombre no aporta ese codigo. Se conserva el dato original de cada fila y se agrega el nuevo ejemplo sin sustituir historial previo.
-
-## Informacion base y envios explicitos
-
-Regresiones: identificador literal de archivo ISA distinto de disponibilidad y envio; multiples empresas/reenvios; cancelacion y fechas incompatibles; snapshots de codigo/nombre/identificador; colecciones antiguas ausentes sin eventos fabricados; referencias modelo→version base→envio compatibles en entrada y carga; fecha de envio no posterior al modelo; historial inmutable ante nuevas versiones. Los flujos DOM verifican registrar una base, enviar a dos empresas y asociar un modelo con una entrega concreta sin ninguna accion de comunicacion externa.
-
-## Plan primero: solicitudes, especialidades previstas y entregables
-
-Validacion ampliada para alcances lineales y puntuales dentro de una misma solicitud, especialidades esperadas sin archivos, denominador definido independiente del inventario, referencias exactas a bases/modelos y recepciones manuales explicitamente declaradas. Importacion masiva Excel/CSV con previsualizacion, claves estables, omision idempotente y bloqueo atomico de conflictos; muestra de 12.000 filas sinteticas. Tabla principal limitada a 50 filas por pagina, selectores de evidencia y envios limitados a 100 coincidencias con busqueda.
-
-Persistencia: lectura de registros existentes aun con cuota llena, rechazo seguro de guardado sin alterar datos previos y deteccion de cambios de otra pestaña antes de sobrescribir. Sin nueva migracion de almacenamiento ni acceso a servicios externos. Pruebas de DOM no sustituyen inspeccion visual en navegador publicado.
-
-Candidato final de plan: **205/205 pruebas** y TypeScript/Vite/HTML standalone aprobados. El ensayo de 12.000 filas valida procesamiento y renderizado acotado; no garantiza persistencia ilimitada con historial bajo la cuota real de cada navegador. Los lotes que excedan la cuota se rechazan conservando el estado anterior. Inspeccion visual y smoke interactivo del sitio publicado a cargo del proceso de entrega.
-
-## Inicio vacio y limpieza de avisos
-
-209 pruebas y build TypeScript/Vite/standalone aprobados tras retirar banner y acciones de ejemplo. Los titulos web y standalone son Registro BIM. Primer inicio sin especialidades, documentos, modelos, planes o inventarios predefinidos; registros previamente guardados y migracion historica conservados. Pruebas de importacion de plan arrancan con registro vacio. Plantilla descargable solo con encabezados. El fixture de inventario permanece solo como material de pruebas y no se incluye en el bundle; comprobacion automatizada de ausencia de payloads de ejemplo. Avisos de cuota, errores, confirmaciones y persistencia local/temporal siguen disponibles.
+La comprobación del sitio publicado debe repetirse después del despliegue según [Publicación](PUBLICACION.md), usando datos de prueba externos y sin incorporarlos al código.

@@ -1,16 +1,25 @@
-# Publicacion de la demo
+# Publicación
 
-Destino autorizado: `YerkoBM/ResgistroBIM` (conservar esta escritura exacta).
+- Repositorio: `YerkoBM/ResgistroBIM`.
+- Sitio: https://yerkobm.github.io/ResgistroBIM/
+- Base de Vite: `/ResgistroBIM/`.
 
-Solo datos ficticios. La interfaz publica no tiene autenticacion real ni sincronizacion entre usuarios.
+## Despliegue en GitHub Pages
 
-1. La integracion GitHub debe tener acceso de escritura a este repositorio.
-2. En Settings → Pages, seleccionar Source: GitHub Actions.
-3. Subir el codigo a main. El workflow ejecuta TypeScript, build y las pruebas del registro antes del despliegue.
-4. Comprobar el resultado de Actions y la URL que devuelve Pages. No confundir el enlace del repositorio con el sitio.
+1. En **Settings → Pages**, usar **GitHub Actions** como origen.
+2. Subir los cambios a `main`. El workflow instala dependencias y ejecuta `npm test` antes de desplegar `dist`.
+3. Comprobar que los trabajos de build y deploy terminaron correctamente. Los pull requests ejecutan pruebas, pero no publican el sitio.
+4. Abrir Pages y verificar el commit publicado, no solo el contenido del repositorio.
 
-Estado verificado el 2026-10-28: publicado en https://yerkobm.github.io/ResgistroBIM/ .
+## Comprobación después de publicar
 
-CI de la primera publicacion: https://github.com/YerkoBM/ResgistroBIM/actions/runs/40694410211 — build y deploy correctos. Commit inicial de la demo: 5b6c8c91b6deb694115f632cb98685fc93e0c13f.
+- En un perfil sin datos: Plan de entregas vacío, sin botones de cargar ejemplos.
+- En un perfil con registros: datos e historial conservados.
+- Crear especialidad/solicitud, importar un archivo de prueba y revisar errores y confirmaciones.
+- Comprobar navegación, tablas, filtros, guardado y recarga; revisar consola y presentación móvil cuando corresponda.
 
-La revision visual en navegador real confirmo fondo claro y disposicion tabular. Se probaron filtro de entregables y navegacion a observaciones en aquella version inicial. El nuevo control documental requiere una comprobacion visual posterior al despliegue. Sin errores de la aplicacion en consola (el navegador registra avisos propios de su extension, ajenos a la demo). No se afirma validacion visual movil.
+Publicar una actualización no sube ni centraliza los registros guardados en los navegadores. No incluir documentos privados, credenciales ni archivos de pruebas del usuario en el repositorio o en `dist`.
+
+## HTML local
+
+`npm run build:standalone` genera `release/RegistroBIM_Demo_Local.html`. El nombre histórico se conserva; la aplicación inicia vacía. El navegador puede restringir el almacenamiento de archivos locales: si aparece el aviso de sesión temporal, descarga respaldos antes de cerrar.

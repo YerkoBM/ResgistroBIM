@@ -1,118 +1,81 @@
 # ResgistroBIM
 
-## Control documental local
+Control de solicitudes BIM, información base y entregas de modelos para quien coordina subcontratos.
 
-https://yerkobm.github.io/ResgistroBIM/
+[**Abrir RegistroBIM**](https://yerkobm.github.io/ResgistroBIM/)
 
-Dos registros para quien coordina y gestiona: documentos de especialistas, y modelos producidos internamente o recibidos de empresas externas. Disposicion tabular inspirada en un MIDP/TIDP, sin afirmar cumplimiento formal de una plantilla o norma. No es un gestor de tareas BIM.
+La aplicación parte vacía. Los datos se guardan en este navegador: **no se comparten entre usuarios ni equipos**. Si ya tienes registros, se conservan.
 
-**Inicio vacio. Cambios guardados solo en este navegador, sin sincronizacion entre personas. Los registros existentes se conservan. Exporta respaldos para evitar perder datos.**
+## Flujo de trabajo
 
-### Uso
+### 1. Plan de entregas
 
-- Agregar especialidades y documentos. Cada documento tiene codigo, nombre, tipo, responsable y proxima fecha prevista. Editar ficha desde su historial.
-- Filtrar el registro por especialidad o estado. Seleccionar un documento para abrir versiones y observaciones.
-- Registrar una version con fecha prevista propia, fecha entregada, archivo, enlace opcional y cambios. Las revisiones anteriores no se sobrescriben.
-- El atraso usa la fecha prevista de esa revision y su entrega real. Una nueva revision sin plazo propio no hereda el plazo de otra. Si existe una proxima entrega programada, el plazo pendiente sigue visible aunque haya versiones anteriores. Al marcar que la version corresponde a la entrega prevista, su fecha queda en la revision y se libera el proximo plazo. Una entrega parcial puede conservar el plazo pendiente.
-- Revisar estado y, desde la segunda version, el posible uso de la version anterior despues de los cambios. La decision exige criterio, revisor y fecha; no es una comparacion automatica.
-- Registrar la version utilizada para advertir si se esta trabajando con una anterior.
-- Vincular observaciones a la version comentada. Una respuesta indica la version de resolucion; el cierre requiere verificacion expresa. Recibir un archivo nuevo no cierra observaciones.
-- Exportar el registro filtrado a CSV o todos los datos a JSON. Los enlaces son referencias; no se suben ni comparan archivos.
+Define primero lo que esperas recibir, aunque todavía no existan archivos.
 
-### Modelos y entregas
+- Crea una solicitud y selecciona sus **especialidades esperadas**.
+- Agrega entregables por **tramo/sector lineal** o por **obra individual**. Una misma solicitud puede combinar ambos; el sector relacionado es opcional.
+- Indica tipo de entregable, subcontrato o responsable, revisión/identificador objetivo y fecha comprometida.
+- Una especialidad sin entregables definidos queda **por definir**; no se inventa su cantidad a partir del CDE.
+- Revisa entregables definidos, recepciones registradas, objetivos pendientes y vencidos. El alcance completo/parcial corresponde a esa solicitud, no a todo el contrato.
 
-- Fichas individuales o de conjunto con produccion Interna/Externa, equipo o empresa responsable, revision objetivo y proximo plazo.
-- Registrar una version producida o recibida no la envia a revision. La tabla separa ultima disponible de ultima enviada.
-- Cada envio a revision apunta a una version ya registrada, con fecha, destino y objetivo de ese momento. No duplica versiones ni sustituye archivos.
-- Cambiar el objetivo de F a G no altera versiones ni objetivos historicos. Una revision distinta exige motivo, tanto al registrar como al enviar. Se compara igualdad, no orden alfabetico.
-- El plazo pendiente solo se cierra si se marca expresamente. Ni recibir ni enviar una revision implica aprobarla.
-- Insumos documentales: IDs de las versiones realmente utilizadas. No se actualizan al recibir documentos nuevos ni se inventan cuando faltan.
-- Observaciones nuevas vinculadas al envio revisado. Respuesta asociada a un envio compatible y cierre verificado; una version nueva no cierra comentarios.
-- El CSV distingue disponible, etapa y enviada; JSON conserva todo el historial.
+Puedes importar Excel/CSV con vista previa y mapeo de columnas, o asignar responsable, especialidad y plazo a filas seleccionadas. Las claves de solicitud y entregable son estables: una importación repetida omite filas iguales y bloquea conflictos sin sobrescribir historial. La plantilla descargable contiene solo encabezados.
 
-### Datos anteriores
+Una recepción puede vincular una versión exacta de modelo/documento o registrarse como declaración manual con nota. **Recibir no significa aprobar.** La cobertura exige evaluación explícita y coincidencia con el identificador objetivo, cuando existe. Si se esperaba F y llega E, el objetivo sigue pendiente. Cambiar el plan conserva su versión anterior y requiere reevaluar la cobertura; guardar sin cambios no la invalida.
 
-El adaptador lee la demo anterior y conserva documentos, revisiones, estados, observaciones, respuestas y evidencias. El almacenamiento original `registro-bim-demo-v1` queda intacto. Los cambios nuevos se guardan en `registro-documental-demo-v2`. La interfaz permite descargar el respaldo anterior completo, incluidos campos de modelos e historial que ya no forman parte de esta vista.
+### 2. Información base
 
-Produccion, etapa y envios son opcionales en registros historicos. Si no constaban, se muestran como no especificados y no se inventa una recepcion ni un envio. Las nuevas colecciones de modelos son opcionales: un registro v2 existente se abre sin inyectar fichas ni entregas de ejemplo. No se inventan fechas previstas antiguas ni decisiones de reutilizacion. Si el registro esta corrupto o tiene referencias incompatibles, se bloquea la edicion y se ofrece descarga, sin sustituirlo silenciosamente.
+Registra la información que entregas a los subcontratos: planos, archivos ISA, memorias u otros documentos.
 
-### Desarrollo
+Mantén separados **nombre original**, **revisión/fecha del archivo**, **disponible desde** y **fecha real de envío**. La fecha escrita en un ISA es un identificador literal: no se convierte en fecha de envío ni en revisión F/E. La especialidad de esta ficha se elige manualmente.
 
-Requiere Node.js 24 y npm solo para desarrollar:
+Cada envío registra una versión exacta, empresa destinataria, fecha y ubicación o enlace. Permite varias empresas y reenvíos. Es un registro: **no envía archivos, correos ni notificaciones**.
 
-```
+### 3. Modelos y entregas
+
+Distingue producción interna y externa, responsable y revisión objetivo. Registra por separado:
+
+- **Versión disponible:** producida internamente o recibida de una empresa.
+- **Envío a revisión:** referencia a una versión ya disponible, con destino, fecha y objetivo de ese momento.
+
+Cada modelo puede indicar las versiones base y los envíos utilizados. Las referencias no cambian al aparecer una base más reciente. Las observaciones permanecen ligadas a la versión/envío revisado; una respuesta y su cierre requieren registro explícito. Una versión nueva no cierra comentarios anteriores ni certifica que el modelo pueda reutilizarse.
+
+### 4. Seguimiento CDE
+
+Importa un inventario `.xlsx`, `.csv` o `.tsv` y confirma sus columnas, alcance y fecha. **No hay conexión directa con Trimble Connect ni SharePoint.**
+
+- Los vínculos entre archivos CDE y versiones registradas se confirman manualmente; nombres parecidos no prueban equivalencia.
+- La especialidad automática se obtiene solo del código reconocido en el **nombre del archivo**, dentro del patrón `-BIM-…-CODIGO-`. No se deduce de carpetas o tags. Sin código válido: **Sin identificar**. `EST` se presenta como Estructuras.
+- El estado por carpeta y los gráficos describen lo **observado**, no el avance real validado. Se conserva la ruta completa para revisar la ubicación.
+- Un VID de versión distinto no demuestra un cambio geométrico. «No en esta exportación» no significa eliminado.
+- Los atrasos requieren plazos manuales vinculados; no se calculan por antigüedad de modificación.
+
+## Guardado y respaldos
+
+El registro manual usa almacenamiento local del navegador; el inventario CDE usa IndexedDB. Son almacenes separados: descarga **Respaldo JSON** y **Respaldo CDE** cuando corresponda. La restauración CDE es aditiva; el respaldo del registro manual no dispone de un importador general en la interfaz.
+
+Borrar datos del navegador puede eliminar los registros; cambiar de perfil o equipo no los traslada. Cuando la aplicación indique modo temporal, los cambios duran solo durante la sesión. Si se agota la cuota o hay un conflicto detectado entre pestañas, el guardado se rechaza conservando los datos anteriores.
+
+No hay backend, cuentas, permisos por proyecto ni edición multiusuario. El sitio público distribuye la aplicación; no proporciona un repositorio documental compartido. No publiques archivos privados o credenciales dentro del código del repositorio.
+
+## Límites actuales
+
+- Importación: hasta **15 MB**, **25.000 filas**, 100 columnas y 4.000 caracteres por celda. No admite `.xls` ni libros con macros.
+- CDE: hasta **10 instantáneas**; sin función de archivado/eliminación de instantáneas en la interfaz.
+- Plan: hasta 1.000 solicitudes y 25.000 entregables; la cuota del navegador puede limitar el volumen antes.
+- Tablas paginadas. Las pruebas con 12.000 filas no garantizan capacidad ilimitada ni concurrencia entre usuarios.
+
+## Desarrollo
+
+Node.js 24 y npm:
+
+```bash
 npm ci
 npm test
 npm run dev
 ```
 
-`npm test` comprueba TypeScript, build, HTML standalone y pruebas de reglas y flujos DOM. El HTML `release/RegistroBIM_Demo_Local.html` contiene el mismo bundle que Pages y funciona sin red. Si el navegador bloquea almacenamiento, los cambios duran solo durante la sesion.
+`npm test` ejecuta TypeScript, build, generación del HTML local y pruebas de reglas/interfaz. El archivo `release/RegistroBIM_Demo_Local.html` conserva su nombre por compatibilidad; abre la misma aplicación sin datos iniciales y sin requerir red.
 
-### Publicacion
-
-Repositorio `YerkoBM/ResgistroBIM`, base `/ResgistroBIM/`. El workflow de Pages prueba y despliega `main`; los pull requests solo prueban. No hay servidor, autenticacion, permisos, archivos compartidos ni comparacion automatica de contenido. No configurar claves o datos reales en el codigo publico.
-
-### Estructura
-
-- `document-register.ts`: reglas del registro y migracion.
-- `model-register.ts`, `model-view.tsx`: produccion, recepciones, envios y observaciones de modelos.
-- `repository.ts`: persistencia local y proteccion de datos incompatibles.
-- `main.tsx`, `style.css`: interfaz compacta.
-- `filename-specialty.ts`: codigos tecnicos de nombre y deteccion del ejemplo obsoleto.
-- `domain.ts`, `storage-validator.ts`, `seed.ts`: compatibilidad del formato anterior; no exponen un flujo de modelos en la interfaz nueva.
-- `tests/`: reglas, regresiones y flujos DOM.
-
-Para uso compartido real, ver `docs/PASO_A_MULTIUSUARIO.md`.
-
-### Seguimiento CDE
-
-- Importacion local `.xlsx`, `.csv` y `.tsv`, sin conectar ni enviar archivos a Trimble o SharePoint. Vista previa, hoja/fila de encabezado y columnas ajustables antes de guardar.
-- Limites: 15 MB por archivo, 25.000 filas por instantanea, 100 columnas y 4.000 caracteres por celda; 10 instantaneas. Lectura en worker cancelable; CSV con alternativa cooperativa. `.xls` y libros con macros no admitidos.
-- Proyecto/alcance y fecha de exportacion se indican expresamente. No se infieren revisiones contractuales ni resultados IDS desde tags, VID, nombres o carpetas. Fechas Excel sin zona conservan su hora original.
-- Comparacion opcional entre instantaneas del mismo alcance, previa confirmacion de continuidad del ID. `VID de version distinto` no significa diferencia geometrica. `No en esta exportacion` no afirma eliminacion.
-- Cruce manual muchos-a-muchos con versiones exactas del registro: codigo asignado, nombre original y archivo CDE permanecen separados. Un vinculo antiguo con VID distinto debe revisarse; no confirma automaticamente un plazo para la version actual. Origen ausente se muestra como no disponible.
-- Graficos de carpetas, especialidades reconocidas en nombres, estado por carpeta, vinculos y plazos manuales. Los colores son configurables, no colores normativos ISO; carpeta publicada no equivale a aprobacion. Un archivo sin fecha manual vinculada no se considera atrasado.
-- Inventario en IndexedDB, separado del registro manual v2. Fallos de cuota o escrituras desde una pestaña desactualizada no sustituyen datos; se pide recargar. Sin IndexedDB se avisa del modo temporal. Respaldo CDE y restauracion aditiva (no reemplaza datos existentes); el respaldo general del registro manual sigue separado.
-- Tabla paginada a 50 filas. Pruebas sinteticas de 12.000 filas, persistencia, abortos, cuota y conflictos entre pestañas. Las pruebas de almacenamiento simulado no garantizan la cuota de cada navegador.
-
-El inventario inicia vacio. El archivo anonimizado historico queda disponible solo para pruebas automatizadas, fuera del bundle de la aplicacion. Los inventarios ya guardados se conservan.
-
-### Estado del proyecto
-
-La primera vista resume los estados observados en carpetas de los archivos de modelo del inventario seleccionado, con alcance predeterminado `.ifc` y formatos ajustables. El CDE puede estar desordenado: Publicado, Compartido y WIP describen la ubicacion observada, no una validacion del avance real por gestion. No se asignan pesos parciales artificiales. Se cuenta cada File VID: archivos/formats/copias no equivalen necesariamente a modelos fisicos distintos.
-
-El denominador incluye archivos activos sin clasificar; archivados y adjuntos quedan separados. Cero archivos activos se muestra sin porcentaje. Las fichas manuales muestran compromisos vencidos, ausencia de plazo y revision enviada versus objetivo sin mezclarse con los porcentajes CDE. El alcance contractual completo no esta confirmado; no se declara un avance global contractual. Los colores/etiquetas de carpeta son independientes de la clasificacion para avance, que puede configurarse expresamente.
-
-El codigo EST reconocido en el nombre se presenta como Estructuras. La clasificacion original importada y la ruta completa quedan visibles en el detalle; no se reescriben las filas de usuario.
-
-### Regla vigente de especialidad
-
-La especialidad CDE se identifica exclusivamente por un codigo tecnico reconocido en la posicion estructurada `-BIM-…-CODIGO-` del **nombre del archivo**, usando el catalogo observado. No se deduce de carpeta, tags ni columna importada. Sin codigo reconocido o con varias coincidencias: `Sin identificar`. EST se muestra como Estructuras; las demas siglas permanecen literales. Los campos importados originales y la ruta se conservan como evidencia, no como clasificacion autoritativa.
-
-Los inventarios historicos anteriores se conservan sin borrar datos. La clasificacion automatica vigente usa exclusivamente el patron de nombre reconocido; los archivos sin codigo quedan sin identificar.
-
-### Informacion base enviada a empresas
-
-El catalogo ahora distingue disponibilidad de la base y envios reales registrados. `Revision / fecha del archivo` es un identificador literal independiente del nombre original y de `Disponible desde`: una fecha escrita en un ISA no se interpreta como fecha de envio ni se convierte en una revision F/E. La especialidad de una ficha manual la selecciona su responsable, aunque el nombre generico no permita identificarla automaticamente en el CDE.
-
-`Registrar envio` agrega un evento con version exacta, empresa destinataria, fecha real, ubicacion/enlace y nota. No envia archivos, correos ni notificaciones. Se conservan multiples empresas y reenvios, con ultima entrega registrada por empresa y exportacion CSV del historial. Los registros anteriores no se convierten en envios.
-
-Un modelo puede referenciar varias versiones base y, opcionalmente, sus envios concretos. Deben corresponder a las versiones seleccionadas y no ser posteriores a la disponibilidad/recepcion del modelo. Nuevas bases o envios no cambian las referencias historicas ni implican por si mismos que el modelo sea inutilizable. El respaldo JSON conserva ambos registros.
-
-## Plan de entregas (vista principal)
-
-El mandante declara solicitudes y sus especialidades esperadas antes de recibir archivos. Cada entregable puede corresponder a un tramo/sector lineal o a una obra individual, con sector relacionado opcional. Las especialidades previstas sin filas se muestran como **entregables por definir**: no se infiere su cantidad desde el CDE.
-
-- Filas esperadas con responsable, tipo, identificador objetivo y plazo; filtros, paginacion de 50 filas y asignacion por seleccion explicita.
-- Excel/CSV local con mapeo y previsualizacion. Claves estables `solicitud + entregable`; registros identicos se omiten, conflictos bloquean todo el lote sin reemplazar historia.
-- Recepciones declaradas o enlazadas a una version exacta de documento/modelo. Registrar recepcion no equivale a aprobacion. La cobertura requiere evaluacion explicita y coincidencia del identificador objetivo, si se declaro uno.
-- Envios de informacion base existentes pueden vincularse al plan. No se envian correos ni archivos.
-- Ediciones significativas conservan una instantanea anterior del plan y requieren reevaluar su cobertura. Una edicion sin cambios no invalida evaluaciones.
-- Alcance completo/parcial se refiere exclusivamente a cada solicitud declarada, no a la totalidad contractual. No se calculan ponderaciones ni avance real a partir de carpetas del CDE.
-- Sin carga de datos de ejemplo; las reglas de especialidad por nombre permanecen intactas.
-
-El registro sigue siendo local. Si se agota la cuota del navegador, el lote se rechaza y los datos anteriores permanecen intactos. Un registro existente sigue siendo legible con la cuota llena; no se sustituye por datos de ejemplo. Exportar respaldo JSON sigue disponible.
-
-## Inicio sin datos de ejemplo
-
-No se cargan semillas, inventarios ni planes ficticios al iniciar. Se retiraron los botones de cargar ejemplos y el banner repetitivo. Los datos que ya existan en el navegador no se borran ni reclasifican. La plantilla de importacion contiene solo encabezados; los archivos de prueba externos no forman parte del programa. Permanecen los avisos de guardado local/temporal, errores y confirmaciones funcionales.
+- [Publicación y comprobación del despliegue](docs/PUBLICACION.md)
+- [Cobertura de validación](docs/VALIDACION.md)
+- [Qué falta para uso compartido](docs/PASO_A_MULTIUSUARIO.md)

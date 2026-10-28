@@ -1,22 +1,26 @@
-# Paso a control documental compartido
+# Qué falta para uso compartido
 
-Pendiente de decision e implementacion; no forma parte de esta demo.
+La versión actual es local. Abrir el mismo sitio desde varios equipos **no comparte los registros**. GitHub Pages no aporta autenticación, permisos ni base de datos de la aplicación.
 
-## Definir
+## Decisiones necesarias
 
-- Proyecto, especialidades, responsables y revisores.
-- Las tres carpetas/plataformas de documentos y permisos de acceso.
-- Proveedor de autenticacion, base de datos y respaldo. Ninguno esta conectado.
-- Codificacion de documentos, revisiones, estados y plazos contractuales.
+- Proyectos, usuarios y permisos de consulta, edición y revisión.
+- Unidad del plan: solicitudes, especialidades previstas, tramos y obras individuales.
+- Repositorio documental y acceso a archivos/versiones; los archivos pesados pueden permanecer allí.
+- Servicio de autenticación, backend, base de datos y política de respaldos.
 
-## Datos y reglas
+## Implementación pendiente
 
-Documentos con codigo estable; versiones con plazo propio, entrega real y cambios; referencias a contenido concreto; revision humana del uso de archivos anteriores; observaciones ancladas a la version revisada, respuesta y cierre confirmado. Mantener separado el registro de documentos fuente del registro de modelos gestionados por el coordinador. Diferenciar produccion interna, recepcion externa y envio a revision. Cada envio referencia una version exacta y conserva objetivo historico, destinatario, fecha y observaciones; el registro del modelo conserva responsable e insumos. No convertir estos controles en un gestor de tareas BIM.
+- Persistencia central con autorización en servidor, transacciones y control de concurrencia.
+- Historial auditable de cambios, recepciones, envíos y cierres de observaciones.
+- Migración revisada de los registros locales, sin perder identificadores ni relaciones.
+- Respaldo/restauración, pruebas entre usuarios y control de acceso a enlaces privados.
+- Integraciones documentales solo cuando se definan sus permisos y contratos de datos.
 
-El formato de tabla se inspira en un MIDP/TIDP; su adecuacion formal debe contrastarse con las exigencias del proyecto.
+## Reglas que deben conservarse
 
-## Antes de usar informacion real
+El plan esperado no se deduce de los archivos existentes. La base enviada, el modelo disponible y el envío a revisión son hechos distintos, ligados a versiones exactas. Recibir o publicar un archivo no equivale a aprobarlo; los cambios de objetivo conservan su historial.
 
-Autenticacion real, permisos por proyecto en servidor, transacciones, control de concurrencia, auditoria inmutable de cambios y respuestas, respaldo/restauracion y pruebas entre usuarios. Nunca secretos en el JavaScript publico. Mantener documentos pesados en su repositorio documental y guardar enlaces a versiones concretas.
+La comparación automática de contenido o geometría sería otra función. Las observaciones, declaraciones de cambios y evaluaciones humanas actuales no certifican equivalencia entre archivos.
 
-La comparacion de contenido automatica requiere un proceso aparte y validacion humana. La declaracion de cambios o una decision de reutilizacion no certifica equivalencia geometrica ni documental.
+Estas capacidades están pendientes: no se presentan como implementadas ni como cumplimiento formal de una norma MIDP/TIDP.
