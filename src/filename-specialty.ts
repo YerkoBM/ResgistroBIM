@@ -1,0 +1,4 @@
+/** Observed structured BIM filename codes; no folder, column, tag or fuzzy fallback. */
+const codes=new Set('AAE ADC ADV ALC APO ARQ ASG AXO CTA DFL DGM ELE EST EXP ILU INF ITS MCS MFD MMR PAI PAV PDP PEB SAN SGV TEL TPG TUN'.split(' '));
+export function filenameSpecialty(name:string):{code:string;specialty:string}{const filename=name.replaceAll('\\','/').split('/').at(-1)||'';const matches=[...filename.matchAll(/-BIM-[^-]+-([A-Z]{2,5})(?=-)/gi)];if(matches.length!==1||!codes.has(matches[0][1].toUpperCase()))return {code:'',specialty:'Sin identificar'};const code=matches[0][1].toUpperCase();return {code,specialty:code==='EST'?'Estructuras':code};}
+export function obsoleteSpecialtyExample(snapshot:{scope:string;fileName:string}):boolean{return snapshot.scope==='Proyecto demo anonimizado'&&snapshot.fileName==='Inventario_CDE_anonimizado.xlsx';}

@@ -1,3 +1,4 @@
+import {filenameSpecialty} from './filename-specialty.ts';
 import { date } from './document-register.ts';
 import type { Register } from './document-register.ts';
 import { records as inventoryRecords } from './inventory-domain.ts';
@@ -39,8 +40,6 @@ export function parseExtensions(input: string): string[] {
   if (!parts.length || parts.length > 10 || parts.some(value => !/^\.?[a-z0-9]{1,20}$/i.test(value))) throw new Error('Indica entre 1 y 10 extensiones alfanumericas sin comodines (por ejemplo .ifc, .isa).');
   return [...new Set(parts.map(value => '.' + value.replace(/^\./, '').toLowerCase()))];
 }
-/** Confirmed equivalence only; raw source fields are never rewritten. */
-export function canonicalSpecialty(value:string):string {const raw=value.trim();return ['est','estructura','estructuras'].includes(raw.toLocaleLowerCase())?'Estructuras':raw||'Sin clasificar';}
 const emptyCounts = (): ModelInventoryCounts => ({ Terminado: 0, 'Trabajable con observaciones': 0, 'Pendiente de revision': 0, 'Sin clasificar': 0, Archivado: 0, Adjunto: 0 });
 const normalizedPath = (path: string) => path.replaceAll('\\', '/').split('/').filter(Boolean).join('/').toLowerCase();
 const workflowStages: Record<NonNullable<FolderRule['workflow']>, ModelInventoryStage> = {
@@ -85,7 +84,7 @@ export function modelInventoryKpis(state: InventoryState, snapshot: InventorySna
   const active = records.filter(entry => entry.stage !== 'Archivado' && entry.stage !== 'Adjunto');
   const grouped = new Map<string, ModelSpecialtyKpis>();
   for (const entry of active) {
-    const name = canonicalSpecialty(entry.record.specialty);
+    const name = filenameSpecialty(entry.record.name).specialty;
     const specialty = grouped.get(name) ?? { name, total: 0, counts: emptyCounts(), percent: null };
     specialty.total++; specialty.counts[entry.stage]++; grouped.set(name, specialty);
   }

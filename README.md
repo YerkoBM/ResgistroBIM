@@ -58,6 +58,7 @@ Repositorio `YerkoBM/ResgistroBIM`, base `/ResgistroBIM/`. El workflow de Pages 
 - `model-register.ts`, `model-view.tsx`: produccion, recepciones, envios y observaciones de modelos.
 - `repository.ts`: persistencia local y proteccion de datos incompatibles.
 - `main.tsx`, `style.css`: interfaz compacta.
+- `filename-specialty.ts`: codigos tecnicos de nombre y deteccion del ejemplo obsoleto.
 - `domain.ts`, `storage-validator.ts`, `seed.ts`: compatibilidad del formato anterior; no exponen un flujo de modelos en la interfaz nueva.
 - `tests/`: reglas, regresiones y flujos DOM.
 
@@ -70,7 +71,7 @@ Para uso compartido real, ver `docs/PASO_A_MULTIUSUARIO.md`.
 - Proyecto/alcance y fecha de exportacion se indican expresamente. No se infieren revisiones contractuales ni resultados IDS desde tags, VID, nombres o carpetas. Fechas Excel sin zona conservan su hora original.
 - Comparacion opcional entre instantaneas del mismo alcance, previa confirmacion de continuidad del ID. `VID de version distinto` no significa diferencia geometrica. `No en esta exportacion` no afirma eliminacion.
 - Cruce manual muchos-a-muchos con versiones exactas del registro: codigo asignado, nombre original y archivo CDE permanecen separados. Un vinculo antiguo con VID distinto debe revisarse; no confirma automaticamente un plazo para la version actual. Origen ausente se muestra como no disponible.
-- Graficos de carpetas, especialidades declaradas, estado por carpeta, vinculos y plazos manuales. Los colores son configurables, no colores normativos ISO; carpeta publicada no equivale a aprobacion. Un archivo sin fecha manual vinculada no se considera atrasado.
+- Graficos de carpetas, especialidades reconocidas en nombres, estado por carpeta, vinculos y plazos manuales. Los colores son configurables, no colores normativos ISO; carpeta publicada no equivale a aprobacion. Un archivo sin fecha manual vinculada no se considera atrasado.
 - Inventario en IndexedDB, separado del registro manual v2. Fallos de cuota o escrituras desde una pestaña desactualizada no sustituyen datos; se pide recargar. Sin IndexedDB se avisa del modo temporal. Respaldo CDE y restauracion aditiva (no reemplaza datos existentes); el respaldo general del registro manual sigue separado.
 - Tabla paginada a 50 filas. Pruebas sinteticas de 12.000 filas, persistencia, abortos, cuota y conflictos entre pestañas. Las pruebas de almacenamiento simulado no garantizan la cuota de cada navegador.
 
@@ -82,4 +83,10 @@ La primera vista resume los estados observados en carpetas de los archivos de mo
 
 El denominador incluye archivos activos sin clasificar; archivados y adjuntos quedan separados. Cero archivos activos se muestra sin porcentaje. Las fichas manuales muestran compromisos vencidos, ausencia de plazo y revision enviada versus objetivo sin mezclarse con los porcentajes CDE. El alcance contractual completo no esta confirmado; no se declara un avance global contractual. Los colores/etiquetas de carpeta son independientes de la clasificacion para avance, que puede configurarse expresamente.
 
-Equivalencia confirmada de especialidad: `EST`, `Estructura` y `Estructuras` se agrupan como `Estructuras` (sin distinguir mayusculas y espacios exteriores). No se adivinan otras siglas. La clasificacion original y la ruta completa quedan visibles en el detalle; no se reescribe el inventario ni el ejemplo anonimizado.
+El codigo EST reconocido en el nombre se presenta como Estructuras. La clasificacion original importada y la ruta completa quedan visibles en el detalle; no se reescriben las filas de usuario.
+
+### Regla vigente de especialidad
+
+La especialidad CDE se identifica exclusivamente por un codigo tecnico reconocido en la posicion estructurada `-BIM-…-CODIGO-` del **nombre del archivo**, usando el catalogo observado. No se deduce de carpeta, tags ni columna importada. Sin codigo reconocido o con varias coincidencias: `Sin identificar`. EST se muestra como Estructuras; las demas siglas permanecen literales. Los campos importados originales y la ruta se conservan como evidencia, no como clasificacion autoritativa.
+
+El ejemplo anterior que usaba carpetas se conserva como obsoleto y no se elige automaticamente. `Cargar ejemplo anonimizado` agrega la version corregida con identidad distinta, sin reemplazar importaciones, vinculos ni fichas manuales. El nuevo ejemplo mantiene nombres ficticios con el mismo patron de codificacion; los archivos sin codigo permanecen genericos.

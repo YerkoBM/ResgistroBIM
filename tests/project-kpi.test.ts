@@ -6,7 +6,7 @@ import type { InventorySnapshot, InventoryState, FolderRule } from '../src/inven
 import { seedRegister } from '../src/document-register.ts';
 import type { Register } from '../src/document-register.ts';
 
-// Synthetic fixtures only. No user workbook or project records.
+// Synthetic fixtures plus the explicitly approved bundled anonymized example; no private inputs.
 function snapshot(rows: string[][], scope = 'Synthetic scope'): InventorySnapshot {
   const headers = ['File VID', 'Latest version VID', 'File name', 'File location', 'Specialty', 'Revision', 'Status', 'Tags'];
   return { id: 'synthetic-snapshot', scope, label: 'Synthetic', exportDate: '2026-10-28', importedAt: '2026-10-28T00:00:00Z', fileName: 'synthetic.csv', sheet: 'Files', headers, rows, mapping: { ...defaultMapping(headers), specialty: 4, revision: 5, status: 6, tags: 7 } };
@@ -34,12 +34,12 @@ test('default IFC uses case-insensitive final extension and never deduplicates g
 
 test('all six stage counts reconcile; unknown stays active while archive and attachments are excluded', () => {
   const current = snapshot([
-    row('1', 'published.ifc', '/Project prefix/3_PUBLICADO/discipline', 'A'),
-    row('2', 'shared.ifc', 'Project prefix\\2_COMPARTIDO\\discipline', 'A'),
-    row('3', 'wip.ifc', 'Project prefix/1_wIp/discipline', 'B'),
+    row('1', 'SYN-BIM-001-EST-PUBLISHED.ifc', '/Project prefix/3_PUBLICADO/discipline', 'A'),
+    row('2', 'SYN-BIM-002-EST-SHARED.ifc', 'Project prefix\\2_COMPARTIDO\\discipline', 'A'),
+    row('3', 'SYN-BIM-003-SAN-WIP.ifc', 'Project prefix/1_wIp/discipline', 'B'),
     row('4', 'unknown.ifc', 'Project prefix/custom', ''),
-    row('5', 'archived.ifc', 'Project prefix/4_ARCHIVADO/3_PUBLICADO', 'Archived-only'),
-    row('6', 'attachment.ifc', 'Project prefix/3_PUBLICADO/.ATTACHMENT/nested', 'Attachment-only'),
+    row('5', 'SYN-BIM-005-ARQ-ARCHIVED.ifc', 'Project prefix/4_ARCHIVADO/3_PUBLICADO', 'Archived-only'),
+    row('6', 'SYN-BIM-006-ELE-ATTACHMENT.ifc', 'Project prefix/3_PUBLICADO/.ATTACHMENT/nested', 'Attachment-only'),
   ]);
   const result = modelInventoryKpis(state(current), current);
   assert.equal(result.total, 6); assert.equal(result.activeTotal, 4); assert.equal(result.excludedTotal, 2); assert.equal(result.remaining, 3); assert.equal(result.percent, 25);
@@ -47,7 +47,7 @@ test('all six stage counts reconcile; unknown stays active while archive and att
   assert.equal(sum(result.counts), result.total);
   assert.equal(result.specialties.reduce((sum, specialty) => sum + specialty.total, 0), result.activeTotal);
   for (const specialty of result.specialties) { assert.equal(sum(specialty.counts), specialty.total); assert.equal(specialty.counts.Archivado, 0); assert.equal(specialty.counts.Adjunto, 0); }
-  assert.deepEqual(result.specialties.map(specialty => specialty.name), ['A', 'B', 'Sin clasificar']);
+  assert.deepEqual(result.specialties.map(specialty => specialty.name), ['Estructuras', 'SAN', 'Sin identificar']);
   assert.equal(result.specialties[0].percent, 50);
 });
 
@@ -143,5 +143,52 @@ test('empty/legacy manual collections report zero, preserve unknown stages, and 
   assert.ok(register.documents.length > 0); assert.deepEqual(result.rows, []); assert.equal(sum(result.metrics), 0); assert.equal(sum(result.targetCounts), 0); assert.equal(sum(result.deadlineCounts), 0);
   assert.equal(modelInventoryKpis(emptyInventory(), snapshot([])).total, 0);
 });
-test('only confirmed structure aliases merge case/whitespace; source classification and paths stay immutable',async()=>{const {canonicalSpecialty}=await import('../src/project-kpi.ts');for(const s of ['EST',' est ','Estructura','ESTRUCTURAS'])assert.equal(canonicalSpecialty(s),'Estructuras');for(const s of ['Estacion','EST_OTRO','Estructural'])assert.equal(canonicalSpecialty(s),s);const snap=snapshot([row('1','one.ifc','1_WIP/sourceA',' EST '),row('2','two.ifc','2_COMPARTIDO/sourceB','Estructuras'),row('3','three.ifc','3_PUBLICADO/sourceC','Estructura')]);const before=JSON.stringify(snap);const result=modelInventoryKpis({...emptyInventory(),snapshots:[snap]},snap);assert.equal(result.specialties.length,1);assert.equal(result.specialties[0].total,3);assert.deepEqual(result.records.map(x=>x.record.specialty),[' EST ','Estructuras','Estructura']);assert.equal(JSON.stringify(snap),before);});
-test('approved example confirmed alias combines769 IFC without changing total or raw fixture',async()=>{const {readFileSync}=await import('node:fs');const s=JSON.parse(readFileSync('src/data/cde-anonymized-demo.json','utf8'));const before=JSON.stringify(s),result=modelInventoryKpis(s,s.snapshots[0]);const structure=result.specialties.find(x=>x.name==='Estructuras')!;assert.equal(structure.total,769);assert.equal(structure.counts['Trabajable con observaciones'],168);assert.equal(structure.counts['Pendiente de revision'],601);assert.equal(structure.counts.Terminado,0);assert.equal(result.activeTotal,4038);assert.equal(JSON.stringify(s),before);});
+test('filename-only specialties ignore contradictory folders and columns while every raw field stays immutable', () => {
+  const current = snapshot([
+    row('generic', 'modelo generico.ifc', '1_WIP/Estructuras/EST', 'EST'),
+    row('coded', ' SYN-BIM-001-est-STRUCTURE.IFC ', '2_COMPARTIDO/Saneamiento/SAN', 'SAN'),
+    row('other', 'SYN-BIM-002-SAN-OTHER.ifc', '3_PUBLICADO/Estructuras/EST', 'Estructura'),
+    row('substring', 'latest_EST_model.ifc', '1_WIP/Estructuras', 'ESTRUCTURAS'),
+  ]);
+  const data = state(current), before = structuredClone(data);
+  const result = modelInventoryKpis(data, current);
+  assert.equal(result.specialties.find(group => group.name === 'Estructuras')!.total, 1);
+  assert.equal(result.specialties.find(group => group.name === 'SAN')!.total, 1);
+  assert.equal(result.specialties.find(group => group.name === 'Sin identificar')!.total, 2);
+  assert.deepEqual(result.records.map(entry => entry.record.specialty), ['EST', 'SAN', 'Estructura', 'ESTRUCTURAS']);
+  assert.deepEqual(result.records.map(entry => entry.record.name), current.rows.map(row => row[2]));
+  assert.deepEqual(data, before);
+});
+
+test('specialty tokens do not select file formats or merge different File VIDs', () => {
+  const current = snapshot([
+    row('ifc', 'SYN-BIM-001-EST-SAME.ifc', '1_WIP', 'SAN'),
+    row('duplicate-name', 'SYN-BIM-001-EST-SAME.ifc', '1_WIP', 'ARQ'),
+    row('isa', 'SYN-BIM-001-EST-SAME.isa', '2_COMPARTIDO', 'SAN'),
+    row('zip', 'SYN-BIM-001-EST-SAME.ifc.zip', '3_PUBLICADO', 'SAN'),
+  ]);
+  const result = modelInventoryKpis(state(current), current);
+  assert.equal(result.activeTotal, 2);
+  assert.deepEqual(result.records.map(entry => entry.record.fileId), ['ifc', 'duplicate-name']);
+  assert.equal(result.specialties.find(group => group.name === 'Estructuras')!.total, 2);
+  const withIsa = modelInventoryKpis(state(current), current, ['.ifc', '.isa']);
+  assert.equal(withIsa.specialties.find(group => group.name === 'Estructuras')!.total, 3);
+  assert.equal(withIsa.activeTotal, 3);
+});
+
+test('approved filename-only example counts EST155 and unknown706 without rewriting the fixture', async () => {
+  const { readFileSync } = await import('node:fs');
+  const data = JSON.parse(readFileSync('src/data/cde-anonymized-demo.json', 'utf8'));
+  const before = JSON.stringify(data), result = modelInventoryKpis(data, data.snapshots[0]);
+  const structures = result.specialties.find(group => group.name === 'Estructuras')!;
+  assert.ok(structures);
+  assert.equal(structures.total, 155);
+  assert.equal(structures.counts['Pendiente de revision'], 3);
+  assert.equal(structures.counts['Trabajable con observaciones'], 152);
+  assert.equal(structures.counts.Terminado, 0);
+  assert.equal(result.specialties.find(group => group.name === 'Sin identificar')!.total, 706);
+  assert.equal(result.total, 4039);
+  assert.equal(result.activeTotal, 4038);
+  assert.equal(result.specialties.reduce((sum, group) => sum + group.total, 0), 4038);
+  assert.equal(JSON.stringify(data), before);
+});
