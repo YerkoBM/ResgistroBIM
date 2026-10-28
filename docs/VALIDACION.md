@@ -9,9 +9,11 @@ Fecha: 2026-10-28.
 - Auditoria de dependencias de produccion: 0 vulnerabilidades reportadas por npm audit en la fecha de revision. No equivale a auditoria de seguridad.
 - Rediseño: pruebas adicionales de registro inicial, seleccion de ficha sin mutacion, filtro sin ficha obsoleta, observacion enlazada tras navegacion hash y conservacion de rol/historial. Se corrigio un reinicio involuntario del filtro al navegar a una observacion.
 - Navegador real/capturas responsive: pendiente. El navegador cloud existente bloqueo el archivo local por politica de la organizacion; no se intento evadir el bloqueo. El entorno bloqueo el inicio de Chromium con socket EPERM. No se intento evadir esa restriccion.
-- Sin despliegue, usuarios reales, base de datos remota, automatizacion IFC o pruebas multiusuario.
+- Demo publica desplegada con GitHub Actions. Sin usuarios reales, base de datos remota, automatizacion IFC o pruebas multiusuario.
 
 Esta es una demostracion de flujos, no una entrega lista para almacenar informacion real de proyecto.
 
 - Fondo claro forzado con color-scheme: only light y metadato light, incluso con preferencia oscura del sistema; paleta de superficies aclarada conservando texto oscuro.
 - Aviso visible: no ingresar informacion real del proyecto.
+
+- Sitio publico revisado visualmente: fondo claro, tabla/ficha, filtro y ruta hash de observaciones correctos. La limitacion anterior de archivo local no impidio revisar el sitio publico autorizado.

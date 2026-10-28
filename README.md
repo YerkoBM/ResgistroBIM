@@ -4,6 +4,10 @@
 
 Prototipo funcional con datos ficticios para definir el registro de entregas, versiones, observaciones y modelos derivados. **No es todavia una aplicacion multiusuario ni un sistema de produccion.**
 
+## Demo publicada
+
+https://yerkobm.github.io/ResgistroBIM/ — acceso publico, solo datos ficticios y almacenamiento local por navegador.
+
 ## Abrir sin instalar
 
 Abrir `release/RegistroBIM_Demo_Local.html` en un navegador. Todo el codigo y estilo estan incluidos; no solicita archivos externos. Los cambios se guardan en este navegador si permite almacenamiento local. Si no lo permite, la franja superior indica que duran solo durante la sesion. Exportar JSON desde Historial permite conservar una copia informativa; la importacion no esta implementada.
@@ -63,6 +67,6 @@ Ver `docs/PASO_A_MULTIUSUARIO.md`. Requiere decidir repositorio, proveedor de au
 - TypeScript y build de produccion aprobados.
 - Pruebas de dominio y flujos DOM aprobadas.
 - Prueba standalone sin red y sin localStorage aprobada mediante DOM simulado.
-- **Inspeccion visual en navegador real pendiente**: el arranque de Chromium automatizado estaba restringido; el navegador cloud existente bloqueo el archivo local por politica de la organizacion. No se afirma que las capturas o el renderizado movil real esten validados.
+- Inspeccion visual del sitio publico en navegador real aprobada: fondo claro, registro tabular, filtro y navegacion hash. Renderizado movil real pendiente.
 - Sin servidor, persistencia compartida, concurrencia multiusuario, control de acceso real, respaldo remoto, notificaciones ni comparacion IFC automatica.
 - Solo se incluyen datos ficticios; no se cargan documentos del usuario. El estado de publicacion se comprueba en GitHub Actions y Settings → Pages.
