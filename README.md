@@ -4,7 +4,7 @@
 
 https://yerkobm.github.io/ResgistroBIM/
 
-Dos registros sencillos: documentos recibidos de especialistas y modelos entregados al mandante por otra empresa. Disposicion tabular inspirada en un MIDP/TIDP, sin afirmar cumplimiento formal de una plantilla o norma. No es un gestor de tareas BIM.
+Dos registros para quien coordina y gestiona: documentos de especialistas, y modelos producidos internamente o recibidos de empresas externas. Disposicion tabular inspirada en un MIDP/TIDP, sin afirmar cumplimiento formal de una plantilla o norma. No es un gestor de tareas BIM.
 
 **Solo datos ficticios. Cambios guardados en el navegador, sin sincronizacion entre personas. No ingresar informacion real ni enlaces privados.**
 
@@ -19,21 +19,22 @@ Dos registros sencillos: documentos recibidos de especialistas y modelos entrega
 - Vincular observaciones a la version comentada. Una respuesta indica la version de resolucion; el cierre requiere verificacion expresa. Recibir un archivo nuevo no cierra observaciones.
 - Exportar el registro filtrado a CSV o todos los datos a JSON. Los enlaces son referencias; no se suben ni comparan archivos.
 
-### Modelos al mandante
+### Modelos y entregas
 
-- Fichas individuales o de conjunto por especialidad, con empresa entregadora y revision objetivo vigente.
-- El plazo pendiente solo se cierra si se marca expresamente; registrar una revision distinta no implica cumplir el objetivo.
-- Cada entrega guarda revision realmente entregada, objetivo en ese momento, empresa, fecha y motivo si difiere. Una ficha sin entregas no se presenta como cumplida.
-- Cambiar el objetivo de F a G no altera la revision entregada ni el objetivo historico. Se compara igualdad, no orden alfabetico.
-- Seleccionar las versiones documentales efectivamente utilizadas, incluso si no son las ultimas. Pueden quedar sin registrar; no se inventan insumos. No se admiten documentos recibidos despues de la fecha de la entrega del modelo.
-- Observaciones fiscales vinculadas a una entrega concreta del modelo, respuesta en esa entrega o una posterior y cierre verificado. Una nueva entrega no reubica ni cierra comentarios anteriores.
-- El CSV de modelos resume ultima entrega y objetivo vigente; el respaldo JSON conserva todo el historial y observaciones.
+- Fichas individuales o de conjunto con produccion Interna/Externa, equipo o empresa responsable, revision objetivo y proximo plazo.
+- Registrar una version producida o recibida no la envia a revision. La tabla separa ultima disponible de ultima enviada.
+- Cada envio a revision apunta a una version ya registrada, con fecha, destino y objetivo de ese momento. No duplica versiones ni sustituye archivos.
+- Cambiar el objetivo de F a G no altera versiones ni objetivos historicos. Una revision distinta exige motivo, tanto al registrar como al enviar. Se compara igualdad, no orden alfabetico.
+- El plazo pendiente solo se cierra si se marca expresamente. Ni recibir ni enviar una revision implica aprobarla.
+- Insumos documentales: IDs de las versiones realmente utilizadas. No se actualizan al recibir documentos nuevos ni se inventan cuando faltan.
+- Observaciones nuevas vinculadas al envio revisado. Respuesta asociada a un envio compatible y cierre verificado; una version nueva no cierra comentarios.
+- El CSV distingue disponible, etapa y enviada; JSON conserva todo el historial.
 
 ### Datos anteriores
 
 El adaptador lee la demo anterior y conserva documentos, revisiones, estados, observaciones, respuestas y evidencias. El almacenamiento original `registro-bim-demo-v1` queda intacto. Los cambios nuevos se guardan en `registro-documental-demo-v2`. La interfaz permite descargar el respaldo anterior completo, incluidos campos de modelos e historial que ya no forman parte de esta vista.
 
-Las nuevas colecciones de modelos son opcionales: un registro v2 existente se abre sin inyectar fichas ni entregas de ejemplo. No se inventan fechas previstas antiguas ni decisiones de reutilizacion. Si el registro esta corrupto o tiene referencias incompatibles, se bloquea la edicion y se ofrece descarga, sin sustituirlo silenciosamente.
+Produccion, etapa y envios son opcionales en registros historicos. Si no constaban, se muestran como no especificados y no se inventa una recepcion ni un envio. Las nuevas colecciones de modelos son opcionales: un registro v2 existente se abre sin inyectar fichas ni entregas de ejemplo. No se inventan fechas previstas antiguas ni decisiones de reutilizacion. Si el registro esta corrupto o tiene referencias incompatibles, se bloquea la edicion y se ofrece descarga, sin sustituirlo silenciosamente.
 
 ### Desarrollo
 
@@ -54,7 +55,7 @@ Repositorio `YerkoBM/ResgistroBIM`, base `/ResgistroBIM/`. El workflow de Pages 
 ### Estructura
 
 - `document-register.ts`: reglas del registro y migracion.
-- `model-register.ts`, `model-view.tsx`: fichas, entregas y observaciones al mandante.
+- `model-register.ts`, `model-view.tsx`: produccion, recepciones, envios y observaciones de modelos.
 - `repository.ts`: persistencia local y proteccion de datos incompatibles.
 - `main.tsx`, `style.css`: interfaz compacta.
 - `domain.ts`, `storage-validator.ts`, `seed.ts`: compatibilidad del formato anterior; no exponen un flujo de modelos en la interfaz nueva.
