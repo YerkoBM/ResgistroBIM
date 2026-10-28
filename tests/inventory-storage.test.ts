@@ -43,7 +43,7 @@ test('quota failure leaves old inventory available and does not silently fall ba
 test('invalid persisted inventory is exposed for recovery without overwrite',async()=>{
  factory();const initial=new InventoryRepository();await initial.open();const bad={schema:1,snapshots:[{invalid:true}],links:[]};
  const db=await database();await new Promise<void>((resolve,reject)=>{const tx=db.transaction('inventory','readwrite');tx.objectStore('inventory').put(bad,'state');tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error);});db.close();
- const broken=new InventoryRepository();await assert.rejects(broken.open());assert.equal(broken.blocked,true);assert.deepEqual(broken.recovery,bad);await assert.rejects(broken.save(inventory(2)));assert.deepEqual(await rawState(),bad);
+ const broken=new InventoryRepository();await assert.rejects(broken.open());assert.equal(broken.blocked,true);await assert.rejects(broken.open(),/bloqueado/);assert.deepEqual(broken.recovery,bad);await assert.rejects(broken.save(inventory(2)));assert.deepEqual(await rawState(),bad);
 });
 
 test('without IndexedDB the local session remains usable and is explicitly nonpersistent',async()=>{
@@ -53,5 +53,6 @@ test('without IndexedDB the local session remains usable and is explicitly nonpe
 test('database version change closes existing connection and blocks stale writes',async()=>{
  factory();const repo=new InventoryRepository();await repo.open();await repo.save(inventory(3));
  await new Promise<void>((resolve,reject)=>{const request=indexedDB.open('registro-cde-local-v1',2);request.onsuccess=()=>{request.result.close();resolve();};request.onerror=()=>reject(request.error);request.onblocked=()=>reject(new Error('Existing connection failed to close'));});
- assert.equal(repo.blocked,true);assert.equal(repo.persistent,false);await assert.rejects(repo.save(inventory(4)));
+ assert.equal(repo.blocked,true);await assert.rejects(repo.open(),/bloqueado/);assert.equal(repo.persistent,false);await assert.rejects(repo.save(inventory(4)));
 });
+test('concurrent repository opens await the same loaded state, never an interim empty cache',async()=>{factory();const writer=new InventoryRepository();await writer.open();const expected=inventory(3);await writer.save(expected);writer.close();const reader=new InventoryRepository();const a=reader.open();await new Promise(r=>setTimeout(r,0));const b=reader.open();const result=await Promise.all([a,b]);assert.deepEqual(result,[expected,expected]);reader.close();});

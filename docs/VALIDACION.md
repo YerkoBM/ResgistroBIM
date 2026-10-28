@@ -27,3 +27,7 @@ La inspeccion de pixeles y los flujos en navegador real se realizan sobre Pages 
 Ejemplo anonimizado revisado por separado: SHA-256 `639725cc0c58f81f438078c35db656620dda9304995583d0f0aa31f6507ceba2`, 12.933 registros. Las pruebas verifican hash, campos personales/fechas/tamanos omitidos, carga expresa aditiva, no duplicacion y filtros de especialidad. No se incluyen el Excel privado ni scripts de transformacion privados. Auditoria de dependencias de produccion: 0 vulnerabilidades reportadas al validar este candidato.
 
 El bundle supera el aviso generico de 500 KB de Vite porque incluye el JSON anonimizado (sin peticion de red) para mantener el HTML standalone. Se conserva un unico JS y CSS, worker inline; la tabla limita el render a 50 filas y los graficos extensos tienen desplazamiento.
+
+## Estado del proyecto
+
+Benchmark del ejemplo revisado: 4.039 archivos IFC, 4.038 activos, 965 sin revisar, 2.496 trabajables, 577 terminados y 1 archivado. Avance por conteo: 577/4.038 = 14,3%; por completar o confirmar: 3.461. Sin deduplicacion de modelos fisicos ni extrapolacion al alcance contractual. Pruebas de formatos, desconocidos, cero denominador, clasificacion explicita independiente de etiquetas, tabla de especialidades y filtros; compromisos manuales independientes. Apertura simultanea del almacen compartido espera la misma carga, sin cache vacia intermedia.

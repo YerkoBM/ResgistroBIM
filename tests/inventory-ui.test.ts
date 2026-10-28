@@ -103,10 +103,10 @@ async function preview(dom: JSDOM, content: string, name = 'synthetic.csv') {
   await until(() => !!dom.window.document.querySelector('.import-panel'), 'CSV preview rendered');
 }
 
-test('CDE is a distinct third register; synthetic demo, chart filters and session warning stay explicit', async () => {
+test('CDE remains a distinct secondary register; synthetic demo, chart filters and session warning stay explicit', async () => {
   const { dom, doc, errors, network } = await setup({ persistent: false });
   try {
-    assert.deepEqual(Array.from(doc.querySelectorAll('nav[aria-label="Registros"] button')).map(node => node.textContent), ['Documentos de especialistas', 'Modelos y entregas', 'Seguimiento CDE']);
+    assert.deepEqual(Array.from(doc.querySelectorAll('nav[aria-label="Registros"] button')).map(node => node.textContent), ['Estado del proyecto', 'Documentos de especialistas', 'Modelos y entregas', 'Seguimiento CDE']);
     await openInventory(dom);
     assert.equal(doc.querySelector('h1')?.textContent, 'Seguimiento CDE');
     assert.match(doc.querySelector('.inventory-status')!.textContent!, /Ejemplo ficticio.*Lectura local, sin conexion al CDE.*solo durante esta sesion/);

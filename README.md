@@ -75,3 +75,9 @@ Para uso compartido real, ver `docs/PASO_A_MULTIUSUARIO.md`.
 - Tabla paginada a 50 filas. Pruebas sinteticas de 12.000 filas, persistencia, abortos, cuota y conflictos entre pestañas. Las pruebas de almacenamiento simulado no garantizan la cuota de cada navegador.
 
 `Cargar ejemplo anonimizado` agrega expresamente una instantanea de 12.933 registros derivada de un inventario, con especialidades y distribucion por carpetas. Identidades, nombres y rutas se sustituyeron; responsables, fechas por archivo y tamanos se omitieron. No representa los plazos ficticios del registro manual ni crea vinculos automaticamente. El JSON revisado se incluye en el bundle para que el HTML standalone no requiera red; se analiza solo al pulsar el boton.
+
+### Estado del proyecto
+
+La primera vista resume el avance por archivos de modelo del inventario seleccionado, con alcance predeterminado `.ifc` y formatos ajustables. El criterio de este proyecto es: Publicado = terminado, Compartido = trabajable con observaciones, WIP = sin revisar. No se asignan pesos parciales artificiales. Se cuenta cada File VID: archivos/formats/copias no equivalen necesariamente a modelos fisicos distintos.
+
+El denominador incluye archivos activos sin clasificar; archivados y adjuntos quedan separados. Cero archivos activos se muestra sin porcentaje. Las fichas manuales muestran compromisos vencidos, ausencia de plazo y revision enviada versus objetivo sin mezclarse con los porcentajes CDE. El alcance contractual completo no esta confirmado; no se declara un avance global contractual. Los colores/etiquetas de carpeta son independientes de la clasificacion para avance, que puede configurarse expresamente.
