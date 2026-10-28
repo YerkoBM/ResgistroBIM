@@ -17,3 +17,13 @@ La validacion publica posterior al despliegue se registra por separado. No hay p
 ## Perspectiva de gestion
 
 67 pruebas locales aprobadas tras separar produccion/recepcion de envio a revision. Incluyen produccion interna sin empresa externa, fecha de envio no anterior al modelo, referencias exactas, objetivo historico del envio, motivo por revision distinta, observaciones al envio y conservacion de etapas antiguas no especificadas. Todos los datos iniciales son ficticios; no se incluyen identidades de organizaciones reales del usuario.
+
+## Seguimiento CDE (candidato local)
+
+Regresiones cubiertas: parser XLSX/CSV acotado y cancelable, celdas de fecha sin cambio de zona, IDs numericos sin perdida de precision; mapeo opcional vacio, identificadores duplicados y nombres repetidos; comparacion solo con continuidad confirmada y alcance compatible; cruces muchos-a-muchos, enlaces historicos no propagados por defecto, plazos solo con referencia verificable; estados por prefijo de carpeta y raiz de proyecto; restauracion aditiva; IndexedDB 12.000 filas, dos pestañas, cuota/abortos, corrupcion y versionchange.
+
+La inspeccion de pixeles y los flujos en navegador real se realizan sobre Pages tras desplegar el commit validado. No confundir jsdom/fake-indexeddb con validacion de cuota o layout real.
+
+Ejemplo anonimizado revisado por separado: SHA-256 `639725cc0c58f81f438078c35db656620dda9304995583d0f0aa31f6507ceba2`, 12.933 registros. Las pruebas verifican hash, campos personales/fechas/tamanos omitidos, carga expresa aditiva, no duplicacion y filtros de especialidad. No se incluyen el Excel privado ni scripts de transformacion privados. Auditoria de dependencias de produccion: 0 vulnerabilidades reportadas al validar este candidato.
+
+El bundle supera el aviso generico de 500 KB de Vite porque incluye el JSON anonimizado (sin peticion de red) para mantener el HTML standalone. Se conserva un unico JS y CSS, worker inline; la tabla limita el render a 50 filas y los graficos extensos tienen desplazamiento.

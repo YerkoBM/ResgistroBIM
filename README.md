@@ -62,3 +62,16 @@ Repositorio `YerkoBM/ResgistroBIM`, base `/ResgistroBIM/`. El workflow de Pages 
 - `tests/`: reglas, regresiones y flujos DOM.
 
 Para uso compartido real, ver `docs/PASO_A_MULTIUSUARIO.md`.
+
+### Seguimiento CDE
+
+- Importacion local `.xlsx`, `.csv` y `.tsv`, sin conectar ni enviar archivos a Trimble o SharePoint. Vista previa, hoja/fila de encabezado y columnas ajustables antes de guardar.
+- Limites: 15 MB por archivo, 25.000 filas por instantanea, 100 columnas y 4.000 caracteres por celda; 10 instantaneas. Lectura en worker cancelable; CSV con alternativa cooperativa. `.xls` y libros con macros no admitidos.
+- Proyecto/alcance y fecha de exportacion se indican expresamente. No se infieren revisiones contractuales ni resultados IDS desde tags, VID, nombres o carpetas. Fechas Excel sin zona conservan su hora original.
+- Comparacion opcional entre instantaneas del mismo alcance, previa confirmacion de continuidad del ID. `VID de version distinto` no significa diferencia geometrica. `No en esta exportacion` no afirma eliminacion.
+- Cruce manual muchos-a-muchos con versiones exactas del registro: codigo asignado, nombre original y archivo CDE permanecen separados. Un vinculo antiguo con VID distinto debe revisarse; no confirma automaticamente un plazo para la version actual. Origen ausente se muestra como no disponible.
+- Graficos de carpetas, especialidades declaradas, estado por carpeta, vinculos y plazos manuales. Los colores son configurables, no colores normativos ISO; carpeta publicada no equivale a aprobacion. Un archivo sin fecha manual vinculada no se considera atrasado.
+- Inventario en IndexedDB, separado del registro manual v2. Fallos de cuota o escrituras desde una pestaña desactualizada no sustituyen datos; se pide recargar. Sin IndexedDB se avisa del modo temporal. Respaldo CDE y restauracion aditiva (no reemplaza datos existentes); el respaldo general del registro manual sigue separado.
+- Tabla paginada a 50 filas. Pruebas sinteticas de 12.000 filas, persistencia, abortos, cuota y conflictos entre pestañas. Las pruebas de almacenamiento simulado no garantizan la cuota de cada navegador.
+
+`Cargar ejemplo anonimizado` agrega expresamente una instantanea de 12.933 registros derivada de un inventario, con especialidades y distribucion por carpetas. Identidades, nombres y rutas se sustituyeron; responsables, fechas por archivo y tamanos se omitieron. No representa los plazos ficticios del registro manual ni crea vinculos automaticamente. El JSON revisado se incluye en el bundle para que el HTML standalone no requiera red; se analiza solo al pulsar el boton.
