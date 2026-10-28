@@ -11,7 +11,7 @@ Pendiente de decision e implementacion; no forma parte de esta demo.
 
 ## Datos y reglas
 
-Documentos con codigo estable; versiones con plazo propio, entrega real y cambios; referencias a contenido concreto; revision humana del uso de archivos anteriores; observaciones ancladas a la version revisada, respuesta y cierre confirmado. No asociar estos controles a tareas BIM ni exigir modelos derivados.
+Documentos con codigo estable; versiones con plazo propio, entrega real y cambios; referencias a contenido concreto; revision humana del uso de archivos anteriores; observaciones ancladas a la version revisada, respuesta y cierre confirmado. Mantener separado el registro de documentos fuente del registro de modelos entregados al mandante. Cada entrega de modelo debe conservar revision real, objetivo historico, empresa, insumos exactos y observaciones de esa entrega. No convertir estos controles en un gestor de tareas BIM.
 
 El formato de tabla se inspira en un MIDP/TIDP; su adecuacion formal debe contrastarse con las exigencias del proyecto.
 
